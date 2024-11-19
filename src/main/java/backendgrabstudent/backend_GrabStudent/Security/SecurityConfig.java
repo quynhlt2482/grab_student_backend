@@ -15,12 +15,14 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers(
-                                "/api/email/sendOtp",
-                                "/api/student/register",
-                                "/api/student/verifyOtp")
-                        .permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers(
+//                                "/api/email/sendOtp",
+//                                "/api/student/register",
+//                                "/api/student/verifyOtp"
+//                                )
+//                        .permitAll()
+//                        .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 );
 
         return http.build();
