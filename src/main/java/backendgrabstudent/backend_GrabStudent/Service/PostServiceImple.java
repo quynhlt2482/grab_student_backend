@@ -56,10 +56,10 @@ public class PostServiceImple implements PostService{
 
     @Override
     public PostDTO createPost(PostDTO postDTO) {
-        // Lấy studentId từ cookies
-        Integer studentId = getStudentIdFromCookies();
+        // Lấy studentId từ payload
+        Integer studentId = postDTO.getStudentId();
         if (studentId == null) {
-            throw new RuntimeException("Student ID is missing from cookies");
+            throw new RuntimeException("Student ID is missing in the request payload");
         }
 
         // Gán studentId vào postDTO
