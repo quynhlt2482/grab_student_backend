@@ -1,10 +1,15 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
-import backendgrabstudent.backend_GrabStudent.DTO.StudentDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
 import backendgrabstudent.backend_GrabStudent.Mapper.StudentMapper;
 import backendgrabstudent.backend_GrabStudent.Repository.StudentRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,39 +22,44 @@ public class StudentServiceImple implements StudentService {
     private StudentRepository studentRepository;
     private StudentMapper studentMapper;
     private EmailService emailService;
+    @Value("${jwt.secret}")
+    private String SECRET_KEY;
+    private HttpServletRequest request;
 
     @Autowired
-    public StudentServiceImple(StudentRepository studentRepository, StudentMapper studentMapper, EmailService emailService) {
+    public StudentServiceImple(StudentRepository studentRepository, StudentMapper studentMapper, EmailService emailService, HttpServletRequest request) {
         this.studentRepository = studentRepository;
         this.studentMapper = studentMapper;
         this.emailService = emailService;
+        this.request = request;
     }
 
     @Override
-    public List<StudentDTO> getAllStudent() {
+    public List<StudentResponseDTO> getAllStudent() {
         return studentRepository.findAll().stream()
-                .map(studentMapper::studentToStudentDTO)
+                .map(studentMapper::studentToStudentResponseDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<StudentDTO> getStudentById(int id) {
+    public Optional<StudentResponseDTO> getStudentById(int id) {
         return studentRepository.findById(id)
-                .map(studentMapper::studentToStudentDTO);
+                .map(studentMapper::studentToStudentResponseDTO);
     }
 
     @Override
-    public StudentDTO saveStudent(StudentDTO studentDTO) {
-        Student student = studentMapper.studentDTOToStudent(studentDTO);
+    public StudentResponseDTO saveStudent(StudentResponseDTO studentResponseDTO) {
+//        studentResponseDTO.get
+        Student student = studentMapper.studentResponseDTOToStudent(studentResponseDTO);
         Student savedStudent = studentRepository.save(student);
-        return studentMapper.studentToStudentDTO(savedStudent);
+        return studentMapper.studentToStudentResponseDTO(savedStudent);
     }
 
     @Override
-    public StudentDTO updateStudent(StudentDTO studentDTO) {
-        Student student = studentMapper.studentDTOToStudent(studentDTO);
+    public StudentResponseDTO updateStudent(StudentResponseDTO studentResponseDTO) {
+        Student student = studentMapper.studentResponseDTOToStudent(studentResponseDTO);
         Student updatedStudent = studentRepository.save(student);
-        return studentMapper.studentToStudentDTO(updatedStudent);
+        return studentMapper.studentToStudentResponseDTO(updatedStudent);
     }
 
     @Override
@@ -101,4 +111,43 @@ public class StudentServiceImple implements StudentService {
             return "Email not found!";
         }
     }
+
+    @Override
+    public Optional<StudentResponseDTO> getStudentLoginInfor() {
+        String authorizationHeader = request.getHeader("Authorization");
+        Integer studentId = null;
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+
+            try {
+                // Giải mã JWT và lấy claims từ token
+                Claims claims = Jwts.parser()
+                        .setSigningKey(SECRET_KEY)
+                        .parseClaimsJws(token)
+                        .getBody();
+
+                // Lấy student_id từ claims
+                studentId = Integer.parseInt(claims.get("student_id").toString());
+
+                if (studentId == null) {
+                    throw new RuntimeException("Student ID is missing in the JWT token");
+                }
+            } catch (JwtException | IllegalArgumentException e) {
+                // Nếu có lỗi khi giải mã JWT (token không hợp lệ, hết hạn, hoặc thiếu trường)
+                throw new RuntimeException("Invalid or expired JWT token", e);
+            }
+        } else {
+            throw new RuntimeException("Authorization header is missing or invalid");
+        }
+        return studentRepository.findById(studentId)
+                .map(studentMapper::studentToStudentResponseDTO);
+    }
+
+    @Override
+    public boolean existsById(int id) {
+        return studentRepository.existsById(id);
+    }
+
+
 }

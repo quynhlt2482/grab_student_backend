@@ -1,9 +1,8 @@
-package backendgrabstudent.backend_GrabStudent.DTO;
+package backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
-public class PostDTO {
+public class PostResponseDTO {
     private Integer id;
     private Integer studentId;
     private String pickUpLocation;
@@ -18,10 +17,10 @@ public class PostDTO {
     private String startTimeString;
 
 
-    public PostDTO(Integer id, Integer studentId, String pickUpLocation,
-                   String dropOffLocation, String status, String type,
-                   BigDecimal pickUpLat, BigDecimal pickUpLon, BigDecimal dropOffLat,
-                   BigDecimal dropOffLon, String startDate, String startTimeString) {
+    public PostResponseDTO(Integer id, Integer studentId, String pickUpLocation,
+                           String dropOffLocation, String status, String type,
+                           BigDecimal pickUpLat, BigDecimal pickUpLon, BigDecimal dropOffLat,
+                           BigDecimal dropOffLon, String startDate, String startTimeString) {
         this.id = id;
         this.studentId = studentId;
         this.pickUpLocation = pickUpLocation;

@@ -1,15 +1,13 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
-import backendgrabstudent.backend_GrabStudent.DTO.LoginRequest;
-import backendgrabstudent.backend_GrabStudent.DTO.LoginResponse;
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.LoginRequest;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.LoginResponse;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
 import backendgrabstudent.backend_GrabStudent.Repository.StudentRepository;
 import backendgrabstudent.backend_GrabStudent.Security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class AuthService {

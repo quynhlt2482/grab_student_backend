@@ -1,4 +1,4 @@
-package backendgrabstudent.backend_GrabStudent.DTO;
+package backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO;
 
 public class AccessTokenResponse {
     private String accessToken;

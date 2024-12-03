@@ -1,6 +1,6 @@
 package backendgrabstudent.backend_GrabStudent.Mapper;
 
-import backendgrabstudent.backend_GrabStudent.DTO.StudentDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -9,6 +9,6 @@ import org.mapstruct.factory.Mappers;
 public interface StudentMapper {
     StudentMapper INSTANCE = Mappers.getMapper(StudentMapper.class);
 
-    StudentDTO studentToStudentDTO(Student student);
-    Student studentDTOToStudent(StudentDTO studentDTO);
+    StudentResponseDTO studentToStudentResponseDTO(Student student);
+    Student studentResponseDTOToStudent(StudentResponseDTO studentResponseDTO);
 }

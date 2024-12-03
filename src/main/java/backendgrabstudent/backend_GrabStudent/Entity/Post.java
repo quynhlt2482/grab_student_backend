@@ -23,6 +23,7 @@ public class Post {
     @JoinColumn(name = "student_id")
     @JsonIgnore
     private Student student;
+
     private String pickUpLocation;
     private String dropOffLocation;
     private String status;

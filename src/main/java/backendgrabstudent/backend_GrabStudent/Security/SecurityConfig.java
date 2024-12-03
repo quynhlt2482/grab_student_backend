@@ -22,12 +22,12 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
-//                        .requestMatchers(
-//                                "/api/email/sendOtp",
-//                                "/api/student/register",
-//                                "/api/student/verifyOtp"
-//                                )
-//                        .permitAll()
+                      .requestMatchers(
+                                "/api/email/sendOtp",
+                                "/api/student/**",
+                                "/api/posts/**"
+                                )
+                        .permitAll()
 //                        .anyRequest().authenticated()
                                 .anyRequest().permitAll()
                 );

@@ -1,6 +1,6 @@
 package backendgrabstudent.backend_GrabStudent.RestController;
 
-import backendgrabstudent.backend_GrabStudent.DTO.PostDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Post;
 import backendgrabstudent.backend_GrabStudent.Service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +27,20 @@ public class PostController {
     }
 
     @GetMapping("/rides")
-    public ResponseEntity<List<PostDTO>> getAllPostsRides() {
-        List<PostDTO> posts = postService.getAllPostsRide();
+    public ResponseEntity<List<PostResponseDTO>> getAllPostsRides() {
+        List<PostResponseDTO> posts = postService.getAllPostsRide();
         return ResponseEntity.ok(posts);
     }
     @GetMapping("/customer")
-    public ResponseEntity<List<PostDTO>> getAllPostsCustomer() {
-        List<PostDTO> posts = postService.getAllPostsCustomer();
+    public ResponseEntity<List<PostResponseDTO>> getAllPostsCustomer() {
+        List<PostResponseDTO> posts = postService.getAllPostsCustomer();
         return ResponseEntity.ok(posts);
     }
     @PostMapping("/create")
-    public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO postDTO) {
+    public ResponseEntity<PostResponseDTO> createPost(@RequestBody PostResponseDTO postResponseDTO) {
         try {
             // Gọi dịch vụ để tạo bài đăng
-            PostDTO createdPost = postService.createPost(postDTO);
+            PostResponseDTO createdPost = postService.createPost(postResponseDTO);
             return ResponseEntity.ok(createdPost);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

@@ -2,6 +2,7 @@ package backendgrabstudent.backend_GrabStudent.Security;
 
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.*;
 import java.util.Date;
@@ -11,6 +12,8 @@ public class JwtUtil {
 
     @Value("${jwt.secret}")
     private String SECRET_KEY;
+
+
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 2; // 1 hour
     private final long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
 
@@ -43,6 +46,42 @@ public class JwtUtil {
             return true;
         } catch (ExpiredJwtException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
             return false;
+        }
+    }
+
+    public Integer getStudentIdFromToken(String token) {
+        Claims claims = JwtUtil.decodeJwt(token, SECRET_KEY);
+        Object studentId = claims.get("student_id");
+
+        if (studentId == null) {
+            throw new RuntimeException("Student ID is missing in the JWT token");
+        }
+
+        try {
+            return Integer.parseInt(studentId.toString());
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Student ID in the JWT token is not a valid integer", e);
+        }
+    }
+
+    public static Claims decodeJwt(String token, String secret_key) {
+        try {
+            return Jwts.parser()
+                    .setSigningKey(secret_key)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new RuntimeException("Invalid or expired JWT token", e);
+        }
+    }
+
+
+    // Kiểm tra Authorization header và lấy token
+    public static String extractTokenFromHeader(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        } else {
+            throw new RuntimeException("Authorization header is missing or invalid");
         }
     }
 

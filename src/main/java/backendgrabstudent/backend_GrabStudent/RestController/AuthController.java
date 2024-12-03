@@ -1,8 +1,8 @@
 package backendgrabstudent.backend_GrabStudent.RestController;
 
-import backendgrabstudent.backend_GrabStudent.DTO.LoginRequest;
-import backendgrabstudent.backend_GrabStudent.DTO.LoginResponse;
-import backendgrabstudent.backend_GrabStudent.DTO.RefreshTokenRequest;
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.LoginRequest;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.LoginResponse;
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RefreshTokenRequest;
 import backendgrabstudent.backend_GrabStudent.Entity.RefreshToken;
 import backendgrabstudent.backend_GrabStudent.Security.JwtUtil;
 import backendgrabstudent.backend_GrabStudent.Service.AuthService;
