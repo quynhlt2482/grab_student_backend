@@ -13,6 +13,7 @@ public interface StudentService {
     public StudentResponseDTO saveStudent(StudentResponseDTO student);
     public StudentResponseDTO updateStudent(StudentResponseDTO student);
     public void deleteStudent(int id);
+    public void updatePassword(int id, String newPassword);
 
     public boolean existsById(int id);
     public Optional<StudentResponseDTO> getStudentLoginInfor();

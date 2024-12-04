@@ -1,5 +1,6 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.PostUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Post;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
@@ -128,5 +129,41 @@ public class PostServiceImple implements PostService{
     @Override
     public PostResponseDTO getPostById(int id) {
         return null;
+    }
+
+    @Override
+    public void updatePost(Integer id, PostUpdateDTO postUpdateDTO) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post with ID " + id + " not found"));
+
+        if (postUpdateDTO.getPickUpLocation() != null) {
+            post.setPickUpLocation(postUpdateDTO.getPickUpLocation());
+        }
+        if (postUpdateDTO.getDropOffLocation() != null) {
+            post.setDropOffLocation(postUpdateDTO.getDropOffLocation());
+        }
+        if (postUpdateDTO.getStatus() != null) {
+            post.setStatus(postUpdateDTO.getStatus());
+        }
+        if (postUpdateDTO.getPickUpLat() != null) {
+            post.setPickUpLat(postUpdateDTO.getPickUpLat());
+        }
+        if (postUpdateDTO.getPickUpLon() != null) {
+            post.setPickUpLon(postUpdateDTO.getPickUpLon());
+        }
+        if (postUpdateDTO.getDropOffLat() != null) {
+            post.setDropOffLat(postUpdateDTO.getDropOffLat());
+        }
+        if (postUpdateDTO.getDropOffLon() != null) {
+            post.setDropOffLon(postUpdateDTO.getDropOffLon());
+        }
+        if (postUpdateDTO.getStartDate() != null) {
+            post.setStartDate(postUpdateDTO.getStartDate());
+        }
+        if (postUpdateDTO.getStartTimeString() != null) {
+            post.setStartTimeString(postUpdateDTO.getStartTimeString());
+        }
+
+        postRepository.save(post);
     }
 }

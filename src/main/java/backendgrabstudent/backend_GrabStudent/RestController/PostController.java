@@ -1,5 +1,6 @@
 package backendgrabstudent.backend_GrabStudent.RestController;
 
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.PostUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Post;
 import backendgrabstudent.backend_GrabStudent.Service.PostService;
@@ -47,7 +48,14 @@ public class PostController {
         }
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updatePost(
+            @PathVariable Integer id,
+            @RequestBody PostUpdateDTO postUpdateDTO) {
 
+        postService.updatePost(id, postUpdateDTO);
+        return ResponseEntity.ok("Post updated successfully");
+    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable int id) {

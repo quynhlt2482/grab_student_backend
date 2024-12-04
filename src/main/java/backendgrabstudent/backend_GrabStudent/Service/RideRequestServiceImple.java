@@ -1,6 +1,7 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideRequestDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideRequestUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideRequestReponDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Post;
 import backendgrabstudent.backend_GrabStudent.Entity.RideRequest;
@@ -76,7 +77,29 @@ public class RideRequestServiceImple implements RideRequestService{
     }
 
     @Override
-    public RideRequest updateRideRequest(RideRequest rideRequest) {
-        return null;
+    public void updateRideRequest(Integer id, RideRequestUpdateDTO rideRequestUpdateDTO) {
+        RideRequest rideRequest = rideRequestRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("RideRequest with ID " + id + " not found"));
+
+        if (rideRequestUpdateDTO.getPickUpLocation() != null) {
+            rideRequest.setPickUpLocation(rideRequestUpdateDTO.getPickUpLocation());
+        }
+        if (rideRequestUpdateDTO.getDropOffLocation() != null) {
+            rideRequest.setDropOffLocation(rideRequestUpdateDTO.getDropOffLocation());
+        }
+        if (rideRequestUpdateDTO.getPickUpLat() != null) {
+            rideRequest.setPickUpLat(rideRequestUpdateDTO.getPickUpLat());
+        }
+        if (rideRequestUpdateDTO.getPickUpLon() != null) {
+            rideRequest.setPickUpLon(rideRequestUpdateDTO.getPickUpLon());
+        }
+        if (rideRequestUpdateDTO.getDropOffLat() != null) {
+            rideRequest.setDropOffLat(rideRequestUpdateDTO.getDropOffLat());
+        }
+        if (rideRequestUpdateDTO.getDropOffLon() != null) {
+            rideRequest.setDropOffLon(rideRequestUpdateDTO.getDropOffLon());
+        }
+
+        rideRequestRepository.save(rideRequest);
     }
 }

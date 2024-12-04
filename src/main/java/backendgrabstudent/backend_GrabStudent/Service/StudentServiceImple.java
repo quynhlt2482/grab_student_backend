@@ -10,6 +10,7 @@ import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -49,7 +50,7 @@ public class StudentServiceImple implements StudentService {
 
     @Override
     public StudentResponseDTO saveStudent(StudentResponseDTO studentResponseDTO) {
-//        studentResponseDTO.get
+
         Student student = studentMapper.studentResponseDTOToStudent(studentResponseDTO);
         Student savedStudent = studentRepository.save(student);
         return studentMapper.studentToStudentResponseDTO(savedStudent);
@@ -57,9 +58,19 @@ public class StudentServiceImple implements StudentService {
 
     @Override
     public StudentResponseDTO updateStudent(StudentResponseDTO studentResponseDTO) {
+        // Chuyển đổi DTO thành Entity
         Student student = studentMapper.studentResponseDTOToStudent(studentResponseDTO);
-        Student updatedStudent = studentRepository.save(student);
-        return studentMapper.studentToStudentResponseDTO(updatedStudent);
+
+        // Giữ lại password cũ nếu DTO không chứa password
+        if (student.getPassword() == null) {
+            student.setPassword(studentRepository.findById(student.getId())
+                    .orElseThrow(() -> new RuntimeException("Student not found"))
+                    .getPassword());
+        }
+
+        // Lưu và trả về DTO
+        Student savedStudent = studentRepository.save(student);
+        return studentMapper.studentToStudentResponseDTO(savedStudent);
     }
 
     @Override
@@ -149,5 +160,15 @@ public class StudentServiceImple implements StudentService {
         return studentRepository.existsById(id);
     }
 
+    @Override
+    public void updatePassword(int id, String newPassword) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student with ID " + id + " not found"));
 
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String hashedPassword = encoder.encode(newPassword);
+
+        student.setPassword(hashedPassword);
+        studentRepository.save(student);
+    }
 }

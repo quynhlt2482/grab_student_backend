@@ -1,5 +1,6 @@
 package backendgrabstudent.backend_GrabStudent.RestController;
 
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.StudentPasswordUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Service.StudentService;
 import jakarta.persistence.EntityNotFoundException;
@@ -73,6 +74,17 @@ public class StudentController {
         studentService.updateStudent(studentResponseDTO);
         return ResponseEntity.ok("Student updated successfully");
     }
+    @PutMapping("updatePassword/{id}")
+    public ResponseEntity<String> updatePassword(
+            @PathVariable int id,
+            @RequestBody StudentPasswordUpdateDTO passwordUpdateDTO) {
 
+        if (passwordUpdateDTO.getPassword() == null || passwordUpdateDTO.getPassword().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password must not be empty");
+        }
+
+        studentService.updatePassword(id, passwordUpdateDTO.getPassword());
+        return ResponseEntity.ok("Password updated successfully");
+    }
 
 }

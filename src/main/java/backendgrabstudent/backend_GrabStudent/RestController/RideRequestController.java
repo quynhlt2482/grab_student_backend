@@ -1,6 +1,8 @@
 package backendgrabstudent.backend_GrabStudent.RestController;
 
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.PostUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideRequestDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideRequestUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideRequestReponDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
@@ -43,4 +45,12 @@ public class RideRequestController {
         }
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateRideRequest(
+            @PathVariable Integer id,
+            @RequestBody RideRequestUpdateDTO rideRequestUpdateDTO) {
+
+        rideRequestService.updateRideRequest(id, rideRequestUpdateDTO);
+        return ResponseEntity.ok("RideRequest updated successfully");
+    }
 }

@@ -1,5 +1,6 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.PostUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Post;
 
@@ -10,6 +11,7 @@ public interface PostService {
     public List<PostResponseDTO> getAllPostsRide();
     public List<PostResponseDTO> getAllPostsCustomer();
     public void deletePost(int id);
+    public void updatePost(Integer id, PostUpdateDTO postUpdateDTO);
     public PostResponseDTO createPost(PostResponseDTO postResponseDTO);
     public List<PostResponseDTO> getPostsByIdLogin(int id);
     public PostResponseDTO getPostById(int id);
