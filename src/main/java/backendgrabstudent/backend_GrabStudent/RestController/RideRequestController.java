@@ -1,13 +1,14 @@
 package backendgrabstudent.backend_GrabStudent.RestController;
 
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideRequestDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideRequestReponDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Service.RideRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +31,16 @@ public class RideRequestController {
         }
 
         return ResponseEntity.ok(rideRequests);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<RideRequestReponDTO> createRideRequest(@RequestBody RideRequestReponDTO rideRequestReponDTO) {
+        try {
+            RideRequestReponDTO createdRideRequest = rideRequestService.addRideRequest(rideRequestReponDTO);
+            return ResponseEntity.ok(createdRideRequest);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
 }

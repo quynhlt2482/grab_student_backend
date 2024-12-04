@@ -40,13 +40,14 @@ public class PostController {
     @PostMapping("/create")
     public ResponseEntity<PostResponseDTO> createPost(@RequestBody PostResponseDTO postResponseDTO) {
         try {
-            // Gọi dịch vụ để tạo bài đăng
             PostResponseDTO createdPost = postService.createPost(postResponseDTO);
             return ResponseEntity.ok(createdPost);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
+
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable int id) {
@@ -61,4 +62,6 @@ public class PostController {
                     .body("An error occurred while deleting the student.");
         }
     }
+
+
 }
