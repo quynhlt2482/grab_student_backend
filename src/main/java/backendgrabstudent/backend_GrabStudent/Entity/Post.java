@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -131,4 +133,5 @@ public class Post {
     public void setStartTimeString(String startTimeString) {
         this.startTimeString = startTimeString;
     }
+
 }

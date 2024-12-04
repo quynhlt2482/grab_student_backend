@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -20,8 +21,16 @@ public class Ride {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "driver_id")
+    @JoinColumn(name = "driver_id", referencedColumnName = "id")
     private Student driver;
+
+    @ManyToOne
+    @JoinColumn(name = "passenger_id", referencedColumnName = "id")
+    private Student passenger;
+
+    @OneToOne
+    @JoinColumn(name = "ride_request_id", referencedColumnName = "id", unique = true)
+    private RideRequest rideRequest;
 
     private String startLocation;
     private String endLocation;
@@ -30,8 +39,7 @@ public class Ride {
     private String status;
 
     @OneToMany(mappedBy = "ride")
-    private List<RideRequest> rideRequests;
-
-    @OneToMany(mappedBy = "ride")
     private List<RideReview> rideReviews;
+
+
 }

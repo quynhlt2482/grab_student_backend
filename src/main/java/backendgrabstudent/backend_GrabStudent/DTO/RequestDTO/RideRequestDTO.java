@@ -1,36 +1,13 @@
-package backendgrabstudent.backend_GrabStudent.Entity;
+package backendgrabstudent.backend_GrabStudent.DTO.RequestDTO;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PassengerDTO;
 
 import java.math.BigDecimal;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@Table(name = "riderequest")
-public class RideRequest {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class RideRequestDTO {
     private Integer id;
-
-    @ManyToOne
-    @JoinColumn(name = "passenger_id", referencedColumnName = "id")
-    private Student passenger;
-
-    @ManyToOne
-    @JoinColumn(name = "post_id", referencedColumnName = "id")
-    @JsonIgnore
-    private Post post;
-
-    @OneToOne(mappedBy = "rideRequest")
-    private Ride ride;
-
+    private PassengerDTO passenger;
+    private Integer postId;
     private String pickUpLocation;
     private String dropOffLocation;
     private BigDecimal pickUpLat;
@@ -38,6 +15,20 @@ public class RideRequest {
     private BigDecimal dropOffLat;
     private BigDecimal dropOffLon;
     private String status;
+
+    public RideRequestDTO() {}
+    public RideRequestDTO(Integer id, PassengerDTO passenger, Integer postId, String pickUpLocation, String dropOffLocation, BigDecimal pickUpLat, BigDecimal pickUpLon, BigDecimal dropOffLat, BigDecimal dropOffLon, String status) {
+        this.id = id;
+        this.passenger = passenger;
+        this.postId = postId;
+        this.pickUpLocation = pickUpLocation;
+        this.dropOffLocation = dropOffLocation;
+        this.pickUpLat = pickUpLat;
+        this.pickUpLon = pickUpLon;
+        this.dropOffLat = dropOffLat;
+        this.dropOffLon = dropOffLon;
+        this.status = status;
+    }
 
     public Integer getId() {
         return id;
@@ -47,28 +38,20 @@ public class RideRequest {
         this.id = id;
     }
 
-    public Student getPassenger() {
+    public PassengerDTO getPassenger() {
         return passenger;
     }
 
-    public void setPassenger(Student passenger) {
+    public void setPassenger(PassengerDTO passenger) {
         this.passenger = passenger;
     }
 
-    public Post getPost() {
-        return post;
+    public Integer getPostId() {
+        return postId;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
-    }
-
-    public Ride getRide() {
-        return ride;
-    }
-
-    public void setRide(Ride ride) {
-        this.ride = ride;
+    public void setPostId(Integer postId) {
+        this.postId = postId;
     }
 
     public String getPickUpLocation() {
@@ -85,14 +68,6 @@ public class RideRequest {
 
     public void setDropOffLocation(String dropOffLocation) {
         this.dropOffLocation = dropOffLocation;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public BigDecimal getPickUpLat() {
@@ -125,5 +100,13 @@ public class RideRequest {
 
     public void setDropOffLon(BigDecimal dropOffLon) {
         this.dropOffLon = dropOffLon;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
