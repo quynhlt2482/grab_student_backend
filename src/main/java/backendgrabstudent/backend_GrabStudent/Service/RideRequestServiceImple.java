@@ -20,10 +20,10 @@ import java.util.List;
 public class RideRequestServiceImple implements RideRequestService{
 
     private final RideRequestRepository rideRequestRepository;
-    private RideRequestRepository repository;
-    private RideRequestMapper rideRequestMapper;
-    private StudentRepository studentRepository;
-    private PostRepository postRepository;
+    private final RideRequestRepository repository;
+    private final RideRequestMapper rideRequestMapper;
+    private final StudentRepository studentRepository;
+    private final PostRepository postRepository;
 
     @Autowired
     public RideRequestServiceImple(RideRequestRepository repository,
@@ -59,6 +59,9 @@ public class RideRequestServiceImple implements RideRequestService{
     public RideRequestReponDTO addRideRequest(RideRequestReponDTO rideRequestReponDTO) {
         Student student = studentRepository.findById(rideRequestReponDTO.getPassenger_id()).orElseThrow(() -> new RuntimeException("Student not found"));
         Post post = postRepository.findById(rideRequestReponDTO.getPost_id()).orElseThrow(() -> new RuntimeException("Post not found"));
+        if (!post.getStatus()) {
+            throw new RuntimeException("Cannot add RideRequest: Post is closed");
+        }
 
         RideRequest rideRequest = new RideRequest();
         rideRequest.setPassenger(student);

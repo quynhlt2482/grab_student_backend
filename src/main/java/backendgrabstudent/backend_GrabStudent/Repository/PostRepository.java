@@ -2,10 +2,14 @@ package backendgrabstudent.backend_GrabStudent.Repository;
 
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Post;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RepositoryRestResource
@@ -14,4 +18,14 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             "p.pickUpLat, p.pickUpLon, p.dropOffLat, p.dropOffLon, p.startDate, p.startTimeString) " +
             "FROM Post p JOIN p.student s WHERE p.type = :type")
     List<PostResponseDTO> findByType(String type);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Post p SET p.status = false WHERE p.status = true AND CONCAT(p.startDate, 'T', p.startTimeString) <= :currentDateTime")
+    void updateExpiredPosts(@Param("currentDateTime") LocalDateTime currentDateTime);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Post p SET p.status = false WHERE p.id = :postId")
+    void updatePostStatusById(@Param("postId") Integer postId);
 }

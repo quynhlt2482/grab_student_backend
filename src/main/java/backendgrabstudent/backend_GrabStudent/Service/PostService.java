@@ -3,6 +3,7 @@ package backendgrabstudent.backend_GrabStudent.Service;
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.PostUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Post;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.List;
 
@@ -15,4 +16,10 @@ public interface PostService {
     public PostResponseDTO createPost(PostResponseDTO postResponseDTO);
     public List<PostResponseDTO> getPostsByIdLogin(int id);
     public PostResponseDTO getPostById(int id);
+
+
+    public void updateStatusPostbyAccept(int id);
+
+    @Scheduled(fixedDelay = 300000)
+    public void updatePostStatusInBatch();
 }

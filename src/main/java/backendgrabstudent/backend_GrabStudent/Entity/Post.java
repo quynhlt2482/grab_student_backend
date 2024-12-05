@@ -28,7 +28,7 @@ public class Post {
 
     private String pickUpLocation;
     private String dropOffLocation;
-    private String status;
+    private Boolean status;
     private String type;
     private BigDecimal pickUpLat;
     private BigDecimal pickUpLon;
@@ -70,11 +70,11 @@ public class Post {
     }
 
 
-    public String getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 

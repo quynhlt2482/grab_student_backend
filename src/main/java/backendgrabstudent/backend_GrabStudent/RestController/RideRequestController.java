@@ -6,6 +6,7 @@ import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideRequestUpdateDT
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideRequestReponDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
+import backendgrabstudent.backend_GrabStudent.Exception.ErrorResponse;
 import backendgrabstudent.backend_GrabStudent.Service.RideRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,12 +37,16 @@ public class RideRequestController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<RideRequestReponDTO> createRideRequest(@RequestBody RideRequestReponDTO rideRequestReponDTO) {
+    public ResponseEntity<?> createRideRequest(@RequestBody RideRequestReponDTO rideRequestReponDTO) {
         try {
             RideRequestReponDTO createdRideRequest = rideRequestService.addRideRequest(rideRequestReponDTO);
             return ResponseEntity.ok(createdRideRequest);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            ErrorResponse errorResponse = new ErrorResponse(
+                    "Cannot add RideRequest: " + e.getMessage(),
+                    "ERR_CLOSED_POST" // Ví dụ mã lỗi
+            );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
@@ -53,4 +58,5 @@ public class RideRequestController {
         rideRequestService.updateRideRequest(id, rideRequestUpdateDTO);
         return ResponseEntity.ok("RideRequest updated successfully");
     }
+
 }

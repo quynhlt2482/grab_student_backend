@@ -57,6 +57,19 @@ public class PostController {
         return ResponseEntity.ok("Post updated successfully");
     }
 
+    @PutMapping("/updateAccept/{id}")
+    public ResponseEntity<String> updatePostAccept(@PathVariable Integer id) {
+        try {
+            postService.updateStatusPostbyAccept(id);
+            return ResponseEntity.ok("Post accept successfully.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post not found with ID: " + id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating the post.");
+        }
+    }
+
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable int id) {
         try {

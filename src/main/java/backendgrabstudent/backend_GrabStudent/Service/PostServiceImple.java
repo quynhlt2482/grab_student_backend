@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -102,7 +103,7 @@ public class PostServiceImple implements PostService{
         post.setStudent(student);
         post.setPickUpLocation(postResponseDTO.getPickUpLocation());
         post.setDropOffLocation(postResponseDTO.getDropOffLocation());
-        post.setStatus(postResponseDTO.getStatus());
+        post.setStatus(true);
         post.setType(postResponseDTO.getType());
         post.setPickUpLat(postResponseDTO.getPickUpLat());
         post.setPickUpLon(postResponseDTO.getPickUpLon());
@@ -142,9 +143,6 @@ public class PostServiceImple implements PostService{
         if (postUpdateDTO.getDropOffLocation() != null) {
             post.setDropOffLocation(postUpdateDTO.getDropOffLocation());
         }
-        if (postUpdateDTO.getStatus() != null) {
-            post.setStatus(postUpdateDTO.getStatus());
-        }
         if (postUpdateDTO.getPickUpLat() != null) {
             post.setPickUpLat(postUpdateDTO.getPickUpLat());
         }
@@ -165,5 +163,16 @@ public class PostServiceImple implements PostService{
         }
 
         postRepository.save(post);
+    }
+
+    @Override
+    public void updateStatusPostbyAccept(int id) {
+        postRepository.updatePostStatusById(id);
+    }
+
+    @Override
+    public void updatePostStatusInBatch() {
+        LocalDateTime now = LocalDateTime.now();
+        postRepository.updateExpiredPosts(now);
     }
 }

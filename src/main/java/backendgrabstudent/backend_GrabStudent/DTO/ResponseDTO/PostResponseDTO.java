@@ -7,7 +7,7 @@ public class PostResponseDTO {
     private Integer studentId;
     private String pickUpLocation;
     private String dropOffLocation;
-    private String status;
+    private Boolean status;
     private String type;
     private BigDecimal pickUpLat;  // Vĩ độ điểm đón
     private BigDecimal pickUpLon;  // Kinh độ điểm đón
@@ -18,7 +18,7 @@ public class PostResponseDTO {
 
 
     public PostResponseDTO(Integer id, Integer studentId, String pickUpLocation,
-                           String dropOffLocation, String status, String type,
+                           String dropOffLocation, Boolean status, String type,
                            BigDecimal pickUpLat, BigDecimal pickUpLon, BigDecimal dropOffLat,
                            BigDecimal dropOffLon, String startDate, String startTimeString) {
         this.id = id;
@@ -67,11 +67,11 @@ public class PostResponseDTO {
         this.dropOffLocation = dropOffLocation;
     }
 
-    public String getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 
