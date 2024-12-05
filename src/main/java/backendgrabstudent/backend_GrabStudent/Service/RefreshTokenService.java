@@ -9,5 +9,5 @@ public interface RefreshTokenService {
     RefreshToken createRefreshToken(Student student);
     Optional<RefreshToken> getRefreshToken(String token);
     boolean isRefreshTokenExpired(RefreshToken refreshToken);
-    void revokeRefreshToken(String token);
+    public void revokeRefreshToken();
 }

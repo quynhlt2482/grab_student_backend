@@ -7,6 +7,7 @@ import backendgrabstudent.backend_GrabStudent.Entity.RefreshToken;
 import backendgrabstudent.backend_GrabStudent.Security.JwtUtil;
 import backendgrabstudent.backend_GrabStudent.Service.AuthService;
 import backendgrabstudent.backend_GrabStudent.Service.RefreshTokenService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,5 +53,17 @@ public class AuthController {
 
         return ResponseEntity.status(404).body("Refresh token not found");
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        try {
+            refreshTokenService.revokeRefreshToken();
+
+            return ResponseEntity.ok("Logged out successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Error during logout: " + e.getMessage());
+        }
+    }
+
 
 }

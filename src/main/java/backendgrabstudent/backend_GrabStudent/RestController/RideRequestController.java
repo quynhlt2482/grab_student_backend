@@ -44,7 +44,7 @@ public class RideRequestController {
         } catch (RuntimeException e) {
             ErrorResponse errorResponse = new ErrorResponse(
                     "Cannot add RideRequest: " + e.getMessage(),
-                    "ERR_CLOSED_POST" // Ví dụ mã lỗi
+                    "ERR_CLOSED_POST"
             );
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
@@ -58,5 +58,6 @@ public class RideRequestController {
         rideRequestService.updateRideRequest(id, rideRequestUpdateDTO);
         return ResponseEntity.ok("RideRequest updated successfully");
     }
+
 
 }
