@@ -28,4 +28,22 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Modifying
     @Query("UPDATE Post p SET p.status = false WHERE p.id = :postId")
     void updatePostStatusById(@Param("postId") Integer postId);
+
+    @Query(value = "SELECT new backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO(" +
+            "p.id, s.id, p.pickUpLocation, p.dropOffLocation, p.status, p.type, " +
+            "p.pickUpLat, p.pickUpLon, p.dropOffLat, p.dropOffLon, p.startDate, p.startTimeString) " +
+            "FROM Post p JOIN p.student s " +
+            "WHERE s.id = :studentId AND p.startDate BETWEEN :startDateFrom AND :startDateTo")
+    List<PostResponseDTO> findByStudentIdAndStartDateRange(
+            @Param("studentId") Integer studentId,
+            @Param("startDateFrom") String startDateFrom,
+            @Param("startDateTo") String startDateTo);
+
+    @Query(value = "SELECT new backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO(" +
+            "p.id, s.id, p.pickUpLocation, p.dropOffLocation, p.status, p.type, " +
+            "p.pickUpLat, p.pickUpLon, p.dropOffLat, p.dropOffLon, p.startDate, p.startTimeString) " +
+            "FROM Post p JOIN p.student s " +
+            "WHERE s.id = :studentId")
+    List<PostResponseDTO> findByStudentIdLogin(@Param("studentId") Integer studentId);
+
 }

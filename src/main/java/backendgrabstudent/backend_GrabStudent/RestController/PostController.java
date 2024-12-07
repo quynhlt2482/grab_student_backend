@@ -84,5 +84,15 @@ public class PostController {
         }
     }
 
+    @GetMapping("/postByIdLogin/dateRange")
+    public ResponseEntity<List<PostResponseDTO>> getPostsByIdLoginAndDateRange(@RequestParam String startDateFrom, @RequestParam String startDateTo) {
+        List<PostResponseDTO> posts = postService.getPostsByIdLoginAndDateRange(startDateFrom,startDateTo);
+        return ResponseEntity.ok(posts);
+    }
 
+    @GetMapping("/postByIdLogin")
+    public ResponseEntity<List<PostResponseDTO>> getPostsByIdLogin() {
+        List<PostResponseDTO> posts = postService.getPostsByIdLogin();
+        return ResponseEntity.ok(posts);
+    }
 }

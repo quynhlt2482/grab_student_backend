@@ -1,6 +1,7 @@
 package backendgrabstudent.backend_GrabStudent.Security;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Component;
@@ -49,18 +50,26 @@ public class JwtUtil {
         }
     }
 
-    public Integer getStudentIdFromToken(String token) {
-        Claims claims = JwtUtil.decodeJwt(token, SECRET_KEY);
-        Object studentId = claims.get("student_id");
+    public Integer extractStudentIdFromRequest(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
 
-        if (studentId == null) {
-            throw new RuntimeException("Student ID is missing in the JWT token");
-        }
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = extractTokenFromHeader(authorizationHeader);
 
-        try {
-            return Integer.parseInt(studentId.toString());
-        } catch (NumberFormatException e) {
-            throw new RuntimeException("Student ID in the JWT token is not a valid integer", e);
+            try {
+                Claims claims = decodeJwt(token, SECRET_KEY);
+                Object studentId = claims.get("student_id");
+
+                if (studentId == null) {
+                    throw new RuntimeException("Student ID is missing in the JWT token");
+                }
+
+                return Integer.parseInt(studentId.toString());
+            } catch (JwtException | IllegalArgumentException e) {
+                throw new RuntimeException("Invalid or expired JWT token", e);
+            }
+        } else {
+            throw new RuntimeException("Authorization header is missing or invalid");
         }
     }
 

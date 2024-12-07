@@ -14,12 +14,10 @@ public interface PostService {
     public void deletePost(int id);
     public void updatePost(Integer id, PostUpdateDTO postUpdateDTO);
     public PostResponseDTO createPost(PostResponseDTO postResponseDTO);
-    public List<PostResponseDTO> getPostsByIdLogin(int id);
+    public List<PostResponseDTO> getPostsByIdLogin();
+    public List<PostResponseDTO> getPostsByIdLoginAndDateRange(String startDateFrom, String startDateTo );
     public PostResponseDTO getPostById(int id);
-
-
     public void updateStatusPostbyAccept(int id);
-
     @Scheduled(fixedDelay = 300000)
     public void updatePostStatusInBatch();
 }
