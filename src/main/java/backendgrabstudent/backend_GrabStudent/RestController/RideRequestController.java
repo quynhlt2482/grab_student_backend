@@ -1,18 +1,15 @@
 package backendgrabstudent.backend_GrabStudent.RestController;
 
-import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.PostUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideRequestDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideRequestUpdateDTO;
-import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideRequestReponDTO;
-import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
-import backendgrabstudent.backend_GrabStudent.Exception.ErrorResponse;
 import backendgrabstudent.backend_GrabStudent.Service.RideRequestService;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ErrorResponse;
 import java.util.List;
 
 @RestController
@@ -43,12 +40,13 @@ public class RideRequestController {
             return ResponseEntity.ok(createdRideRequest);
         } catch (RuntimeException e) {
             ErrorResponse errorResponse = new ErrorResponse(
-                    "Cannot add RideRequest: " + e.getMessage(),
-                    "ERR_CLOSED_POST"
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Cannot add RideRequest: " + e.getMessage()
             );
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateRideRequest(

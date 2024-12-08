@@ -30,7 +30,6 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("Email not found!"));
 
         System.out.println();
-        // Kiểm tra mật khẩu
         boolean isPasswordValid = passwordEncoder.matches(request.getPassword(), student.getPassword());
         if (!isPasswordValid) {
             throw new RuntimeException("Invalid password!");
