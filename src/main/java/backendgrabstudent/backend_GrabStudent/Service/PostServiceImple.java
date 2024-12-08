@@ -56,7 +56,7 @@ public class PostServiceImple implements PostService{
 
         Post post = getPost(postResponseDTO, student);
 
-        // Lưu bài đăng
+        // Save Post
         Post savedPost = postRepository.save(post);
 
         // Trả về PostDTO sau khi lưu

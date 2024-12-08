@@ -10,10 +10,7 @@ import backendgrabstudent.backend_GrabStudent.Service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -64,6 +61,9 @@ public class AuthController {
             return ResponseEntity.status(400).body("Error during logout: " + e.getMessage());
         }
     }
-
+    @GetMapping("/random")
+    public String randomStuff(){
+        return "Token hợp lệ mới thấy được cái này";
+    }
 
 }
