@@ -2,8 +2,11 @@ package backendgrabstudent.backend_GrabStudent.Service;
 
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
+import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
+import backendgrabstudent.backend_GrabStudent.Exception.ErrorNumber;
 import backendgrabstudent.backend_GrabStudent.Mapper.StudentMapper;
 import backendgrabstudent.backend_GrabStudent.Repository.StudentRepository;
+import backendgrabstudent.backend_GrabStudent.Security.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -20,19 +23,22 @@ import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImple implements StudentService {
-    private StudentRepository studentRepository;
-    private StudentMapper studentMapper;
-    private EmailService emailService;
+    private final StudentRepository studentRepository;
+    private final StudentMapper studentMapper;
+    private final EmailService emailService;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Value("${jwt.secret}")
     private String SECRET_KEY;
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public StudentServiceImple(StudentRepository studentRepository, StudentMapper studentMapper, EmailService emailService, HttpServletRequest request) {
+    public StudentServiceImple(StudentRepository studentRepository, StudentMapper studentMapper, EmailService emailService, HttpServletRequest request, JwtUtil jwtUtil ) {
         this.studentRepository = studentRepository;
         this.studentMapper = studentMapper;
         this.emailService = emailService;
         this.request = request;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -58,13 +64,15 @@ public class StudentServiceImple implements StudentService {
 
     @Override
     public StudentResponseDTO updateStudent(StudentResponseDTO studentResponseDTO) {
-        // Chuyển đổi DTO thành Entity
         Student student = studentMapper.studentResponseDTOToStudent(studentResponseDTO);
 
-        // Giữ lại password cũ nếu DTO không chứa password
+        studentRepository.findById(student.getId()).orElseThrow(() ->
+                new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED)
+        );
+
         if (student.getPassword() == null) {
             student.setPassword(studentRepository.findById(student.getId())
-                    .orElseThrow(() -> new RuntimeException("Student not found"))
+                    .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED))
                     .getPassword());
         }
 
@@ -77,7 +85,7 @@ public class StudentServiceImple implements StudentService {
     public void deleteStudent(int id) {
         studentRepository.deleteById(id);
     }
-    // Phương thức đăng ký tài khoản và gửi OTP
+
     @Override
     public String registerStudent(String email) {
         Optional<Student> existingStudent = studentRepository.findByEmail(email);
@@ -85,11 +93,9 @@ public class StudentServiceImple implements StudentService {
             return "Email already registered!";
         }
 
-        // Gửi OTP và tạo bản ghi sinh viên mới
         String otp = emailService.generateOTP();
         emailService.sendOTPEmail(email, otp);
 
-        // Tạo bản ghi mới trong cơ sở dữ liệu
         Student newStudent = new Student();
         newStudent.setEmail(email);
         newStudent.setOtpCode(otp);
@@ -110,8 +116,7 @@ public class StudentServiceImple implements StudentService {
 
         if (studentOpt.isPresent()) {
             Student student = studentOpt.get();
-            if (student.getOtpCode().equals(otp) && student.getTimeOtp().isAfter(LocalDateTime.now().minusMinutes(5))) {
-                // Nếu OTP chính xác và không hết hạn
+            if (student.getOtpCode().equals(otp) && student.getTimeOtp().isAfter(LocalDateTime.now().minusMinutes(1))) {
                 student.setVerifyStudent(true);
                 studentRepository.save(student);
                 return "OTP verified successfully!";
@@ -125,32 +130,7 @@ public class StudentServiceImple implements StudentService {
 
     @Override
     public Optional<StudentResponseDTO> getStudentLoginInfor() {
-        String authorizationHeader = request.getHeader("Authorization");
-        Integer studentId = null;
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
-
-            try {
-                // Giải mã JWT và lấy claims từ token
-                Claims claims = Jwts.parser()
-                        .setSigningKey(SECRET_KEY)
-                        .parseClaimsJws(token)
-                        .getBody();
-
-                // Lấy student_id từ claims
-                studentId = Integer.parseInt(claims.get("student_id").toString());
-
-                if (studentId == null) {
-                    throw new RuntimeException("Student ID is missing in the JWT token");
-                }
-            } catch (JwtException | IllegalArgumentException e) {
-                // Nếu có lỗi khi giải mã JWT (token không hợp lệ, hết hạn, hoặc thiếu trường)
-                throw new RuntimeException("Invalid or expired JWT token", e);
-            }
-        } else {
-            throw new RuntimeException("Authorization header is missing or invalid");
-        }
+        Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
         return studentRepository.findById(studentId)
                 .map(studentMapper::studentToStudentResponseDTO);
     }
@@ -163,7 +143,10 @@ public class StudentServiceImple implements StudentService {
     @Override
     public void updatePassword(int id, String newPassword) {
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Student with ID " + id + " not found"));
+                .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
+        if (student.getPassword() == null || student.getPassword().isEmpty()) {
+            throw new CustomException(ErrorNumber.PASSWORD_IS_NULL);
+        }
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String hashedPassword = encoder.encode(newPassword);

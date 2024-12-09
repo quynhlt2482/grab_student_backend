@@ -2,6 +2,8 @@ package backendgrabstudent.backend_GrabStudent.Service;
 
 import backendgrabstudent.backend_GrabStudent.Entity.RefreshToken;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
+import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
+import backendgrabstudent.backend_GrabStudent.Exception.ErrorNumber;
 import backendgrabstudent.backend_GrabStudent.Repository.RefreshTokenRepository;
 import backendgrabstudent.backend_GrabStudent.Repository.StudentRepository;
 import io.jsonwebtoken.Claims;
@@ -79,7 +81,7 @@ public class RefreshTokenServiceImple implements RefreshTokenService {
                 }
             } catch (JwtException | IllegalArgumentException e) {
                 // Nếu có lỗi khi giải mã JWT (token không hợp lệ, hết hạn, hoặc thiếu trường)
-                throw new RuntimeException("Invalid or expired JWT token", e);
+                throw new CustomException(ErrorNumber.TOKEN_EXPIRED);
             }
         } else {
             throw new RuntimeException("Authorization header is missing or invalid");

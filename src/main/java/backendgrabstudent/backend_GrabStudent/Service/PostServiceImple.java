@@ -4,6 +4,8 @@ import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.PostUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Post;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
+import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
+import backendgrabstudent.backend_GrabStudent.Exception.ErrorNumber;
 import backendgrabstudent.backend_GrabStudent.Repository.PostRepository;
 import backendgrabstudent.backend_GrabStudent.Repository.StudentRepository;
 import backendgrabstudent.backend_GrabStudent.Security.JwtUtil;
@@ -51,15 +53,9 @@ public class PostServiceImple implements PostService{
     @Override
     public PostResponseDTO createPost(PostResponseDTO postResponseDTO) {
         Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
-
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
-
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
         Post post = getPost(postResponseDTO, student);
-
-        // Save Post
         Post savedPost = postRepository.save(post);
-
-        // Trả về PostDTO sau khi lưu
         return new PostResponseDTO(savedPost.getId(), studentId, savedPost.getPickUpLocation(),
                 savedPost.getDropOffLocation(), savedPost.getStatus(), savedPost.getType(),
                 savedPost.getPickUpLat(), savedPost.getPickUpLon(), savedPost.getDropOffLat(),
@@ -86,13 +82,15 @@ public class PostServiceImple implements PostService{
     @Override
     public List<PostResponseDTO> getPostsByIdLogin() {
         Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
-        return postRepository.findByStudentIdLogin(studentId);
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
+        return postRepository.findByStudentIdLogin(student.getId());
     }
 
     @Override
     public List<PostResponseDTO> getPostsByIdLoginAndDateRange(String startDateFrom, String startDateTo) {
         Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
-        return postRepository.findByStudentIdAndStartDateRange(studentId, startDateFrom, startDateTo);
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
+        return postRepository.findByStudentIdAndStartDateRange(student.getId(), startDateFrom, startDateTo);
     }
 
     @Override
@@ -103,7 +101,7 @@ public class PostServiceImple implements PostService{
     @Override
     public void updatePost(Integer id, PostUpdateDTO postUpdateDTO) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post with ID " + id + " not found"));
+                .orElseThrow(() -> new CustomException(ErrorNumber.POST_NOT_EXISTED));
 
         if (postUpdateDTO.getPickUpLocation() != null) {
             post.setPickUpLocation(postUpdateDTO.getPickUpLocation());
@@ -135,7 +133,8 @@ public class PostServiceImple implements PostService{
 
     @Override
     public void updateStatusPostbyAccept(int id) {
-        postRepository.updatePostStatusById(id);
+        Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorNumber.POST_NOT_EXISTED));
+        postRepository.updatePostStatusById(post.getId());
     }
 
     @Override

@@ -14,7 +14,6 @@ public interface StudentService {
     public StudentResponseDTO updateStudent(StudentResponseDTO student);
     public void deleteStudent(int id);
     public void updatePassword(int id, String newPassword);
-
     public boolean existsById(int id);
     public Optional<StudentResponseDTO> getStudentLoginInfor();
     public String registerStudent(String email); // Đăng ký tài khoản và gửi OTP

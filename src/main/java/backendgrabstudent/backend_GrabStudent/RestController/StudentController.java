@@ -2,6 +2,7 @@ package backendgrabstudent.backend_GrabStudent.RestController;
 
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.StudentPasswordUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
+import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
 import backendgrabstudent.backend_GrabStudent.Service.StudentService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,16 +46,8 @@ public class StudentController {
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable int id) {
-        try {
             studentService.deleteStudent(id);
             return ResponseEntity.ok("Student with ID " + id + " deleted successfully.");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Student with ID " + id + " not found.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred while deleting the student.");
-        }
     }
     @PostMapping("/create")
     public ResponseEntity<String> createStudent(@RequestBody StudentResponseDTO studentResponseDTO) {
@@ -65,24 +58,18 @@ public class StudentController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateStudent(@PathVariable int id, @RequestBody StudentResponseDTO studentResponseDTO) {
-        if (!studentService.existsById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Student with ID " + id + " not found");
-        }
-
-        studentResponseDTO.setId(id);
-        studentService.updateStudent(studentResponseDTO);
-        return ResponseEntity.ok("Student updated successfully");
+            studentResponseDTO.setId(id);
+            studentService.updateStudent(studentResponseDTO);
+            return ResponseEntity.ok("Student updated successfully");
     }
     @PutMapping("updatePassword/{id}")
     public ResponseEntity<String> updatePassword(
             @PathVariable int id,
             @RequestBody StudentPasswordUpdateDTO passwordUpdateDTO) {
-
-        if (passwordUpdateDTO.getPassword() == null || passwordUpdateDTO.getPassword().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password must not be empty");
-        }
-
+//
+//        if (passwordUpdateDTO.getPassword() == null || passwordUpdateDTO.getPassword().isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password must not be empty");
+//        }
         studentService.updatePassword(id, passwordUpdateDTO.getPassword());
         return ResponseEntity.ok("Password updated successfully");
     }

@@ -18,6 +18,7 @@ public interface PostService {
     public List<PostResponseDTO> getPostsByIdLoginAndDateRange(String startDateFrom, String startDateTo );
     public PostResponseDTO getPostById(int id);
     public void updateStatusPostbyAccept(int id);
+
     @Scheduled(fixedDelay = 300000)
     public void updatePostStatusInBatch();
 }

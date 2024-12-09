@@ -27,7 +27,7 @@ public class AuthService {
     public LoginResponse login(LoginRequest request) {
         // Tìm sinh viên theo email
         Student student = studentRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Email not found!"));
+                .orElseThrow(() -> new RuntimeException("Status 1: Email not found!"));
 
         System.out.println();
         boolean isPasswordValid = passwordEncoder.matches(request.getPassword(), student.getPassword());
