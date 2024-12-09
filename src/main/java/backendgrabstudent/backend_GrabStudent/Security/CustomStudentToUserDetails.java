@@ -17,7 +17,6 @@ public class CustomStudentToUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Gán vai trò mặc định ROLE_USER
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
@@ -38,7 +37,6 @@ public class CustomStudentToUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        // Có thể sử dụng trường `isBanned` để xác định trạng thái khóa
         return !student.getBanned();
     }
 
@@ -49,7 +47,6 @@ public class CustomStudentToUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        // Dựa vào `verifyStudent` để quyết định tài khoản có được kích hoạt không
         return student.getVerifyStudent();
     }
 

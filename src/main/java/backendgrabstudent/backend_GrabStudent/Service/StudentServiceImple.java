@@ -26,9 +26,6 @@ public class StudentServiceImple implements StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
     private final EmailService emailService;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Value("${jwt.secret}")
-    private String SECRET_KEY;
     private final HttpServletRequest request;
     private final JwtUtil jwtUtil;
 
@@ -56,7 +53,6 @@ public class StudentServiceImple implements StudentService {
 
     @Override
     public StudentResponseDTO saveStudent(StudentResponseDTO studentResponseDTO) {
-
         Student student = studentMapper.studentResponseDTOToStudent(studentResponseDTO);
         Student savedStudent = studentRepository.save(student);
         return studentMapper.studentToStudentResponseDTO(savedStudent);
@@ -90,7 +86,7 @@ public class StudentServiceImple implements StudentService {
     public String registerStudent(String email) {
         Optional<Student> existingStudent = studentRepository.findByEmail(email);
         if (existingStudent.isPresent()) {
-            return "Email already registered!";
+            throw new CustomException(ErrorNumber.EMAIL_IS_EXIST);
         }
 
         String otp = emailService.generateOTP();
@@ -121,10 +117,10 @@ public class StudentServiceImple implements StudentService {
                 studentRepository.save(student);
                 return "OTP verified successfully!";
             } else {
-                return "Invalid OTP or OTP has expired!";
+                throw new CustomException(ErrorNumber.OTP_EXPIRED);
             }
         } else {
-            return "Email not found!";
+            throw new CustomException(ErrorNumber.EMAIL_NOT_EXISTED);
         }
     }
 

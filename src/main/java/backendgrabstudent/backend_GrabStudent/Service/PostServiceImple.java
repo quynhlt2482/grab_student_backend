@@ -6,6 +6,7 @@ import backendgrabstudent.backend_GrabStudent.Entity.Post;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
 import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
 import backendgrabstudent.backend_GrabStudent.Exception.ErrorNumber;
+import backendgrabstudent.backend_GrabStudent.Mapper.PostMapper;
 import backendgrabstudent.backend_GrabStudent.Repository.PostRepository;
 import backendgrabstudent.backend_GrabStudent.Repository.StudentRepository;
 import backendgrabstudent.backend_GrabStudent.Security.JwtUtil;
@@ -21,13 +22,15 @@ public class PostServiceImple implements PostService{
     private final HttpServletRequest request;
     private final StudentRepository studentRepository;
     private final JwtUtil jwtUtil;
+    private final PostMapper postMapper;
 
     @Autowired
-    public PostServiceImple(PostRepository postRepository, HttpServletRequest request, StudentRepository studentRepository, JwtUtil jwtUtil) {
+    public PostServiceImple(PostRepository postRepository, HttpServletRequest request, StudentRepository studentRepository, JwtUtil jwtUtil, PostMapper postMapper) {
         this.postRepository = postRepository;
         this.request = request;
         this.studentRepository = studentRepository;
         this.jwtUtil = jwtUtil;
+        this.postMapper = postMapper;
     }
 
     @Override
@@ -102,32 +105,7 @@ public class PostServiceImple implements PostService{
     public void updatePost(Integer id, PostUpdateDTO postUpdateDTO) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorNumber.POST_NOT_EXISTED));
-
-        if (postUpdateDTO.getPickUpLocation() != null) {
-            post.setPickUpLocation(postUpdateDTO.getPickUpLocation());
-        }
-        if (postUpdateDTO.getDropOffLocation() != null) {
-            post.setDropOffLocation(postUpdateDTO.getDropOffLocation());
-        }
-        if (postUpdateDTO.getPickUpLat() != null) {
-            post.setPickUpLat(postUpdateDTO.getPickUpLat());
-        }
-        if (postUpdateDTO.getPickUpLon() != null) {
-            post.setPickUpLon(postUpdateDTO.getPickUpLon());
-        }
-        if (postUpdateDTO.getDropOffLat() != null) {
-            post.setDropOffLat(postUpdateDTO.getDropOffLat());
-        }
-        if (postUpdateDTO.getDropOffLon() != null) {
-            post.setDropOffLon(postUpdateDTO.getDropOffLon());
-        }
-        if (postUpdateDTO.getStartDate() != null) {
-            post.setStartDate(postUpdateDTO.getStartDate());
-        }
-        if (postUpdateDTO.getStartTimeString() != null) {
-            post.setStartTimeString(postUpdateDTO.getStartTimeString());
-        }
-
+        postMapper.updatePostFromDTO(postUpdateDTO, post);
         postRepository.save(post);
     }
 

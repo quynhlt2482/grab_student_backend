@@ -1,8 +1,13 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideUpdateDTO;
+import backendgrabstudent.backend_GrabStudent.Entity.Post;
 import backendgrabstudent.backend_GrabStudent.Entity.Ride;
 import backendgrabstudent.backend_GrabStudent.Entity.RideRequest;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
+import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
+import backendgrabstudent.backend_GrabStudent.Exception.ErrorNumber;
+import backendgrabstudent.backend_GrabStudent.Repository.PostRepository;
 import backendgrabstudent.backend_GrabStudent.Repository.RideRepository;
 import backendgrabstudent.backend_GrabStudent.Repository.RideRequestRepository;
 import backendgrabstudent.backend_GrabStudent.Repository.StudentRepository;
@@ -14,38 +19,77 @@ import java.util.Optional;
 
 @Service
 public class RideServiceImple implements RideService{
-    private RideRepository rideRepository;
-    private StudentRepository studentRepository;
-    private RideRequestRepository rideRequestRepository;
+    private final RideRepository rideRepository;
+    private final StudentRepository studentRepository;
+    private final RideRequestRepository rideRequestRepository;
+    private final PostRepository postRepository;
 
     @Autowired
-    public RideServiceImple(RideRepository rideRepository, StudentRepository studentRepository, RideRequestRepository rideRequestRepository) {
+    public RideServiceImple(RideRepository rideRepository,
+                            StudentRepository studentRepository,
+                            RideRequestRepository rideRequestRepository,
+                            PostRepository postRepository ) {
         this.rideRepository = rideRepository;
         this.studentRepository = studentRepository;
         this.rideRequestRepository = rideRequestRepository;
+        this.postRepository = postRepository;
     }
 
     @Override
-    public Ride createRide(Integer driverId, Integer passengerId, Integer rideRequestId) {
-        Optional<Student> driver = studentRepository.findById(driverId);
-        Optional<Student> passenger = studentRepository.findById(passengerId);
-        Optional<RideRequest> rideRequest = rideRequestRepository.findById(rideRequestId);
+    public Ride createRide(Integer postId,Integer rideRequestId) {
+        Post post = postRepository.findById(postId).
+                orElseThrow(()-> new CustomException(ErrorNumber.POST_NOT_EXISTED));
+        RideRequest rideRequest = rideRequestRepository.findById(rideRequestId)
+                .orElseThrow(()-> new CustomException(ErrorNumber.RIDE_REQUEST_NOT_EXISTED));
 
-        if (driver.isEmpty() || passenger.isEmpty() || rideRequest.isEmpty()) {
-            throw new RuntimeException("Driver, Passenger, or RideRequest not found.");
-        }
+        Student driver = post.getStudent();
+        Student passenger = rideRequest.getPassenger();
+        if (driver == null)
+            throw new CustomException(ErrorNumber.DRIVER_NOT_EXISTED);
+        if (passenger == null)
+            throw new CustomException(ErrorNumber.PASSENGER_NOT_EXISTED);
 
-        // Create Ride
         Ride ride = new Ride();
-        ride.setDriver(driver.get());
-        ride.setPassenger(passenger.get());
-        ride.setRideRequest(rideRequest.get());
-        ride.setStartLocation(rideRequest.get().getPickUpLocation());
-        ride.setEndLocation(rideRequest.get().getDropOffLocation());
+        ride.setDriver(driver);
+        ride.setPassenger(passenger);
+        ride.setRideRequest(rideRequest);
+        ride.setStartLocation(rideRequest.getPickUpLocation());
+        ride.setEndLocation(rideRequest.getDropOffLocation());
         ride.setStartTime(LocalDateTime.now());
         ride.setEndTime(null);
         ride.setStatus("PENDING");
 
         return rideRepository.save(ride);
+    }
+
+    @Override
+    public void updateStatusToDone(Integer rideId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(()-> new CustomException(ErrorNumber.RIDE_NOT_EXISTED));
+
+        ride.setStatus("Done");
+        rideRepository.save(ride);
+    }
+
+    @Override
+    public void updateStatusToCancel(Integer rideId) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(()-> new CustomException(ErrorNumber.RIDE_NOT_EXISTED));
+
+        ride.setStatus("Cancel");
+        rideRepository.save(ride);
+    }
+
+    @Override
+    public void updateRide(Integer rideId, RideUpdateDTO rideUpdateDTO) {
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new CustomException(ErrorNumber.RIDE_NOT_EXISTED));
+
+        ride.setRideRequest(ride.getRideRequest());
+    }
+
+    @Override
+    public void DeleteRide(Integer rideId) {
+
     }
 }

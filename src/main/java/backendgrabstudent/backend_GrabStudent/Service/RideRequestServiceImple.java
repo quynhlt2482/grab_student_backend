@@ -6,6 +6,8 @@ import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideRequestReponDT
 import backendgrabstudent.backend_GrabStudent.Entity.Post;
 import backendgrabstudent.backend_GrabStudent.Entity.RideRequest;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
+import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
+import backendgrabstudent.backend_GrabStudent.Exception.ErrorNumber;
 import backendgrabstudent.backend_GrabStudent.Mapper.RideRequestMapper;
 import backendgrabstudent.backend_GrabStudent.Mapper.StudentMapper;
 import backendgrabstudent.backend_GrabStudent.Repository.PostRepository;
@@ -57,10 +59,12 @@ public class RideRequestServiceImple implements RideRequestService{
 
     @Override
     public RideRequestReponDTO addRideRequest(RideRequestReponDTO rideRequestReponDTO) {
-        Student student = studentRepository.findById(rideRequestReponDTO.getPassenger_id()).orElseThrow(() -> new RuntimeException("Student not found"));
-        Post post = postRepository.findById(rideRequestReponDTO.getPost_id()).orElseThrow(() -> new RuntimeException("Post not found"));
+        Student student = studentRepository.findById(rideRequestReponDTO.getPassenger_id())
+                .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
+        Post post = postRepository.findById(rideRequestReponDTO.getPost_id())
+                .orElseThrow(() -> new CustomException(ErrorNumber.POST_NOT_EXISTED));
         if (!post.getStatus()) {
-            throw new RuntimeException("Cannot add RideRequest: Post is closed");
+            throw new CustomException(ErrorNumber.POST_IS_CLOSED);
         }
 
         RideRequest rideRequest = new RideRequest();

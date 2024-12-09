@@ -1,6 +1,8 @@
 package backendgrabstudent.backend_GrabStudent.Security;
 
 
+import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
+import backendgrabstudent.backend_GrabStudent.Exception.ErrorNumber;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.converter.json.GsonBuilderUtils;
@@ -61,15 +63,15 @@ public class JwtUtil {
                 Object studentId = claims.get("student_id");
 
                 if (studentId == null) {
-                    throw new RuntimeException("Student ID is missing in the JWT token");
+                    throw new CustomException(ErrorNumber.ID_STUDENT_NOT_FOUND_IN_TOKEN);
                 }
 
                 return Integer.parseInt(studentId.toString());
             } catch (JwtException | IllegalArgumentException e) {
-                throw new RuntimeException("Invalid or expired JWT token", e);
+                throw new CustomException(ErrorNumber.TOKEN_EXPIRED);
             }
         } else {
-            throw new RuntimeException("Authorization header is missing or invalid");
+            throw new CustomException(ErrorNumber.AUTHORITY_NOT_EXISTED);
         }
     }
 
@@ -80,17 +82,16 @@ public class JwtUtil {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (JwtException | IllegalArgumentException e) {
-            throw new RuntimeException("Invalid or expired JWT token", e);
+            throw new CustomException(ErrorNumber.TOKEN_EXPIRED);
         }
     }
 
 
-    // Kiểm tra Authorization header và lấy token
     public static String extractTokenFromHeader(String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             return authorizationHeader.substring(7);
         } else {
-            throw new RuntimeException("Authorization header is missing or invalid");
+            throw new CustomException(ErrorNumber.AUTHORITY_NOT_EXISTED);
         }
     }
 
