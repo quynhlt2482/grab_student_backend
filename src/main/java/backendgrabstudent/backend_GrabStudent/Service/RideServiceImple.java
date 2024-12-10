@@ -10,27 +10,21 @@ import backendgrabstudent.backend_GrabStudent.Exception.ErrorNumber;
 import backendgrabstudent.backend_GrabStudent.Repository.PostRepository;
 import backendgrabstudent.backend_GrabStudent.Repository.RideRepository;
 import backendgrabstudent.backend_GrabStudent.Repository.RideRequestRepository;
-import backendgrabstudent.backend_GrabStudent.Repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class RideServiceImple implements RideService{
     private final RideRepository rideRepository;
-    private final StudentRepository studentRepository;
     private final RideRequestRepository rideRequestRepository;
     private final PostRepository postRepository;
 
     @Autowired
     public RideServiceImple(RideRepository rideRepository,
-                            StudentRepository studentRepository,
                             RideRequestRepository rideRequestRepository,
                             PostRepository postRepository ) {
         this.rideRepository = rideRepository;
-        this.studentRepository = studentRepository;
         this.rideRequestRepository = rideRequestRepository;
         this.postRepository = postRepository;
     }
