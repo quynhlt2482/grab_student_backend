@@ -35,16 +35,8 @@ public class RideRequestController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createRideRequest(@RequestBody RideRequestReponDTO rideRequestReponDTO) {
-        try {
-            RideRequestReponDTO createdRideRequest = rideRequestService.addRideRequest(rideRequestReponDTO);
-            return ResponseEntity.ok(createdRideRequest);
-        } catch (RuntimeException e) {
-            ErrorResponse errorResponse = new ErrorResponse(
-                    HttpStatus.BAD_REQUEST.value(),
-                    "Cannot add RideRequest: " + e.getMessage()
-            );
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-        }
+        RideRequestReponDTO createdRideRequest = rideRequestService.addRideRequest(rideRequestReponDTO);
+        return ResponseEntity.ok(createdRideRequest);
     }
 
 

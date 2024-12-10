@@ -40,13 +40,8 @@ public class PostController {
     }
     @PostMapping("/create")
     public ResponseEntity<PostResponseDTO> createPost(@RequestBody PostResponseDTO postResponseDTO) {
-//        try {
-//            PostResponseDTO createdPost = postService.createPost(postResponseDTO);
-//            return ResponseEntity.ok(createdPost);
-//        } catch (RuntimeException e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-//        }
-        return null;
+            PostResponseDTO createdPost = postService.createPost(postResponseDTO);
+            return ResponseEntity.ok(createdPost);
     }
 
     @PutMapping("/update/{id}")
@@ -60,29 +55,15 @@ public class PostController {
 
     @PutMapping("/updateAccept/{id}")
     public ResponseEntity<String> updatePostAccept(@PathVariable Integer id) {
-        try {
             postService.updateStatusPostbyAccept(id);
             return ResponseEntity.ok("Post accept successfully.");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Post not found with ID: " + id);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating the post.");
-        }
     }
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable int id) {
-        try {
+    public ResponseEntity<String> deletePost(@PathVariable int id) {
             postService.deletePost(id);
             return ResponseEntity.ok("Post with ID " + id + " deleted successfully.");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Post with ID " + id + " not found.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred while deleting the student.");
-        }
     }
 
     @GetMapping("/postByIdLogin/dateRange")

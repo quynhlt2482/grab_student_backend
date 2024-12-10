@@ -2,14 +2,13 @@ package backendgrabstudent.backend_GrabStudent.Service;
 
 import backendgrabstudent.backend_GrabStudent.Entity.RefreshToken;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
+import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
+import backendgrabstudent.backend_GrabStudent.Exception.ErrorNumber;
 import backendgrabstudent.backend_GrabStudent.Repository.RefreshTokenRepository;
 import backendgrabstudent.backend_GrabStudent.Repository.StudentRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import backendgrabstudent.backend_GrabStudent.Security.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
-
 import org.springframework.beans.factory.annotation.Value;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,18 +20,16 @@ public class RefreshTokenServiceImple implements RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final StudentRepository studentRepository;
     private final HttpServletRequest request;
-
-
-    @Value("${jwt.secret}")
-    private String SECRET_KEY;
+    private final JwtUtil jwtUtil;
 
     @Value("${refresh.token.expiry.duration}")
     private long refreshTokenExpiryDuration;
 
-    public RefreshTokenServiceImple(RefreshTokenRepository refreshTokenRepository, StudentRepository studentRepository, HttpServletRequest request) {
+    public RefreshTokenServiceImple(RefreshTokenRepository refreshTokenRepository, StudentRepository studentRepository, HttpServletRequest request, JwtUtil jwtUtil) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.studentRepository = studentRepository;
         this.request = request;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -47,8 +44,9 @@ public class RefreshTokenServiceImple implements RefreshTokenService {
     }
 
     @Override
-    public Optional<RefreshToken> getRefreshToken(String token) {
-        return refreshTokenRepository.findByToken(token);
+    public RefreshToken getRefreshToken(String token) {
+        return refreshTokenRepository.findByToken(token).
+                orElseThrow(()-> new CustomException(ErrorNumber.REFRESH_TOKEN_EXPIRED));
     }
 
     @Override
@@ -58,34 +56,10 @@ public class RefreshTokenServiceImple implements RefreshTokenService {
 
     @Override
     public void revokeRefreshToken() {
-        String authorizationHeader = request.getHeader("Authorization");
-        Integer studentId = null;
+        Integer id = jwtUtil.extractStudentIdFromRequest(request);
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
-
-            try {
-                // Giải mã JWT và lấy claims từ token
-                Claims claims = Jwts.parser()
-                        .setSigningKey(SECRET_KEY)
-                        .parseClaimsJws(token)
-                        .getBody();
-
-                // Lấy student_id từ claims
-                studentId = Integer.parseInt(claims.get("student_id").toString());
-
-                if (studentId == null) {
-                    throw new RuntimeException("Student ID is missing in the JWT token");
-                }
-            } catch (JwtException | IllegalArgumentException e) {
-                // Nếu có lỗi khi giải mã JWT (token không hợp lệ, hết hạn, hoặc thiếu trường)
-                throw new RuntimeException("Invalid or expired JWT token", e);
-            }
-        } else {
-            throw new RuntimeException("Authorization header is missing or invalid");
-        }
-
-        Student student = studentRepository.findById(studentId).orElse(null);
+        Student student = studentRepository.findById(id)
+                .orElseThrow(()-> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
 
         List<RefreshToken> refreshTokens = refreshTokenRepository.findByStudent(student);
 
