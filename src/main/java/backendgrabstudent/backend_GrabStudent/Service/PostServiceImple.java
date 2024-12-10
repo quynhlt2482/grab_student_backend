@@ -34,13 +34,13 @@ public class PostServiceImple implements PostService{
     }
 
     @Override
-    public List<PostResponseDTO> getAllPostsRide() {
-        return postRepository.findByType("ride");
+    public List<PostResponseDTO> getAllPostsRide(int userId) {
+        return postRepository.findByType("ride", userId);
     }
 
     @Override
-    public List<PostResponseDTO> getAllPostsCustomer() {
-        return postRepository.findByType("customer");
+    public List<PostResponseDTO> getAllPostsCustomer(int userId) {
+        return postRepository.findByType("customer", userId);
     }
 
     @Override
@@ -50,20 +50,22 @@ public class PostServiceImple implements PostService{
 
     @Override
     public PostResponseDTO createPost(PostResponseDTO postResponseDTO) {
-        Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
+//        Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
+//
+//        Student student = studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
+//
+//        Post post = getPost(postResponseDTO, student);
+//
+//        // Save Post
+//        Post savedPost = postRepository.save(post);
+//
+//        // Trả về PostDTO sau khi lưu
+//        return new PostResponseDTO(savedPost.getId(), studentId, savedPost.getPickUpLocation(),
+//                savedPost.getDropOffLocation(), savedPost.getStatus(), savedPost.getType(),
+//                savedPost.getPickUpLat(), savedPost.getPickUpLon(), savedPost.getDropOffLat(),
+//                savedPost.getDropOffLon(), savedPost.getStartDate(), savedPost.getStartTimeString());
 
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new RuntimeException("Student not found"));
-
-        Post post = getPost(postResponseDTO, student);
-
-        // Save Post
-        Post savedPost = postRepository.save(post);
-
-        // Trả về PostDTO sau khi lưu
-        return new PostResponseDTO(savedPost.getId(), studentId, savedPost.getPickUpLocation(),
-                savedPost.getDropOffLocation(), savedPost.getStatus(), savedPost.getType(),
-                savedPost.getPickUpLat(), savedPost.getPickUpLon(), savedPost.getDropOffLat(),
-                savedPost.getDropOffLon(), savedPost.getStartDate(), savedPost.getStartTimeString());
+        return null;
     }
 
     private static Post getPost(PostResponseDTO postResponseDTO, Student student) {
@@ -73,7 +75,7 @@ public class PostServiceImple implements PostService{
         post.setPickUpLocation(postResponseDTO.getPickUpLocation());
         post.setDropOffLocation(postResponseDTO.getDropOffLocation());
         post.setStatus(true);
-        post.setType(postResponseDTO.getType());
+//        post.setType(postResponseDTO.getType());
         post.setPickUpLat(postResponseDTO.getPickUpLat());
         post.setPickUpLon(postResponseDTO.getPickUpLon());
         post.setDropOffLat(postResponseDTO.getDropOffLat());

@@ -29,6 +29,9 @@ public class Student {
     @Column(name = "is_banned")
     private Boolean isBanned;
 
+    @Column(name = "gender")
+    private Boolean gender;
+
     @Column(name = "is_2fa_enabled")
     private Boolean is2faEnabled;
 

@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface PostService {
     public List<Post> getAllPosts();
-    public List<PostResponseDTO> getAllPostsRide();
-    public List<PostResponseDTO> getAllPostsCustomer();
+    public List<PostResponseDTO> getAllPostsRide(int userId);
+    public List<PostResponseDTO> getAllPostsCustomer(int userId);
     public void deletePost(int id);
     public void updatePost(Integer id, PostUpdateDTO postUpdateDTO);
     public PostResponseDTO createPost(PostResponseDTO postResponseDTO);

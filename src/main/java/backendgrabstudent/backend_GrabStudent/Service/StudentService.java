@@ -3,6 +3,7 @@ package backendgrabstudent.backend_GrabStudent.Service;
 
 
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.VerifyOtpResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,6 @@ public interface StudentService {
 
     public boolean existsById(int id);
     public Optional<StudentResponseDTO> getStudentLoginInfor();
-    public String registerStudent(String email); // Đăng ký tài khoản và gửi OTP
-    public String verifyOtp(String email, String otp); // Xác thực OTP
+//    public String registerStudent(String email);
+    public VerifyOtpResponse verifyOtp(String email, String otp); // Xác thực OTP
 }

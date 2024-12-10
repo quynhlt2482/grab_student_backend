@@ -16,8 +16,8 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "SELECT new backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO(p.id, s.id, p.pickUpLocation, p.dropOffLocation,p.status, p.type, " +
             "p.pickUpLat, p.pickUpLon, p.dropOffLat, p.dropOffLon, p.startDate, p.startTimeString) " +
-            "FROM Post p JOIN p.student s WHERE p.type = :type")
-    List<PostResponseDTO> findByType(String type);
+            "FROM Post p JOIN p.student s WHERE p.type = :type and p.student.id != :userId")
+    List<PostResponseDTO> findByType(String type, int userId);
 
     @Transactional
     @Modifying

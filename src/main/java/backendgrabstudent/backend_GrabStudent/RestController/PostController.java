@@ -29,23 +29,24 @@ public class PostController {
     }
 
     @GetMapping("/rides")
-    public ResponseEntity<List<PostResponseDTO>> getAllPostsRides() {
-        List<PostResponseDTO> posts = postService.getAllPostsRide();
+    public ResponseEntity<List<PostResponseDTO>> getAllPostsRides(@RequestParam int userId) {
+        List<PostResponseDTO> posts = postService.getAllPostsRide(userId);
         return ResponseEntity.ok(posts);
     }
     @GetMapping("/customer")
-    public ResponseEntity<List<PostResponseDTO>> getAllPostsCustomer() {
-        List<PostResponseDTO> posts = postService.getAllPostsCustomer();
+    public ResponseEntity<List<PostResponseDTO>> getAllPostsCustomer(@RequestParam int userId) {
+        List<PostResponseDTO> posts = postService.getAllPostsCustomer(userId);
         return ResponseEntity.ok(posts);
     }
     @PostMapping("/create")
     public ResponseEntity<PostResponseDTO> createPost(@RequestBody PostResponseDTO postResponseDTO) {
-        try {
-            PostResponseDTO createdPost = postService.createPost(postResponseDTO);
-            return ResponseEntity.ok(createdPost);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+//        try {
+//            PostResponseDTO createdPost = postService.createPost(postResponseDTO);
+//            return ResponseEntity.ok(createdPost);
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+//        }
+        return null;
     }
 
     @PutMapping("/update/{id}")

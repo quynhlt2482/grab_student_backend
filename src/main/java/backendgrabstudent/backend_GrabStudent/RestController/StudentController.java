@@ -1,13 +1,17 @@
 package backendgrabstudent.backend_GrabStudent.RestController;
 
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.StudentPasswordUpdateDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ResponseObject;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.VerifyOtpResponse;
 import backendgrabstudent.backend_GrabStudent.Service.StudentService;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.*;
 
@@ -23,15 +27,19 @@ public class StudentController {
     }
 
     // API để đăng ký tài khoản và gửi OTP
-    @PostMapping("/register")
-    public String register(@RequestParam String email) {
-        return studentService.registerStudent(email);
-    }
+//    @PostMapping("/register")
+//    public String register(@RequestParam String email) {
+//        return studentService.registerStudent(email);
+//    }
 
     // API để xác thực OTP
     @PostMapping("/verifyOtp")
-    public String verifyOtp(@RequestParam String email, @RequestParam String otp) {
-        return studentService.verifyOtp(email, otp);
+    public ResponseObject<VerifyOtpResponse> verifyOtp(@RequestParam String email, @RequestParam String otp) {
+        var result = studentService.verifyOtp(email, otp);
+
+        return ResponseObject.<VerifyOtpResponse>builder()
+                .data(result)
+                .build();
     }
 
     @GetMapping("/All")
