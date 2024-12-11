@@ -23,6 +23,7 @@ public enum ErrorNumber {
     AUTHORITY_NOT_EXISTED(14, "Authorization header is missing or invalid",HttpStatus.NOT_FOUND),
     REFRESH_TOKEN_EXPIRED(15, "Refresh token expired",HttpStatus.BAD_REQUEST),
     POST_IS_CLOSED(16, "Post is closed",HttpStatus.BAD_REQUEST),
+    INVALID_POST_TYPE(17, "INVALID_POST_TYPE",HttpStatus.BAD_REQUEST),
     ;
     private final int code;
     private final String message;

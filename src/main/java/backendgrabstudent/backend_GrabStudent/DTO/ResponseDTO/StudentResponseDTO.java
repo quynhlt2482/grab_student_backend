@@ -15,5 +15,4 @@ public class StudentResponseDTO {
     private Boolean is2faEnabled;
     private String avatarUrl;
     private Boolean verifyStudent;
-
 }

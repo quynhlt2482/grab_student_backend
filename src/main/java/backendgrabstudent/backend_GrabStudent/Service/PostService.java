@@ -1,5 +1,6 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.CreatePostRequest;
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.PostUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Post;
@@ -13,9 +14,9 @@ public interface PostService {
     public List<PostResponseDTO> getAllPostsCustomer(int userId);
     public void deletePost(int id);
     public void updatePost(Integer id, PostUpdateDTO postUpdateDTO);
-    public PostResponseDTO createPost(PostResponseDTO postResponseDTO);
-    public List<PostResponseDTO> getPostsByIdLogin();
-    public List<PostResponseDTO> getPostsByIdLoginAndDateRange(String startDateFrom, String startDateTo );
+    public PostResponseDTO createPost(CreatePostRequest request);
+//    public List<PostResponseDTO> getPostsByIdLogin();
+//    public List<PostResponseDTO> getPostsByIdLoginAndDateRange(String startDateFrom, String startDateTo );
     public PostResponseDTO getPostById(int id);
     public void updateStatusPostbyAccept(int id);
 

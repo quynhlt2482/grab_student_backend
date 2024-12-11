@@ -12,7 +12,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "post")
 public class PostType {
     @Id
     String name;

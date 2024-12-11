@@ -32,7 +32,7 @@ public class StudentServiceImple implements StudentService {
     private final JwtUtil jwtUtil;
 
     @Autowired
-    public StudentServiceImple(StudentRepository studentRepository, StudentMapper studentMapper, EmailService emailService, HttpServletRequest request, JwtUtil jwtUtil ) {
+    public StudentServiceImple(StudentRepository studentRepository, StudentMapper studentMapper, EmailService emailService, HttpServletRequest request, JwtUtil jwtUtil) {
         this.studentRepository = studentRepository;
         this.studentMapper = studentMapper;
         this.emailService = emailService;
@@ -85,48 +85,6 @@ public class StudentServiceImple implements StudentService {
     }
 
     @Override
-    public String registerStudent(String email) {
-        Optional<Student> existingStudent = studentRepository.findByEmail(email);
-        if (existingStudent.isPresent()) {
-            throw new CustomException(ErrorNumber.EMAIL_IS_EXIST);
-        }
-
-        String otp = emailService.generateOTP();
-        emailService.sendOTPEmail(email, otp);
-
-        Student newStudent = new Student();
-        newStudent.setEmail(email);
-        newStudent.setOtpCode(otp);
-        newStudent.setTimeOtp(LocalDateTime.now());
-        newStudent.setVerifyStudent(false);
-        newStudent.setName("");
-        newStudent.setPassword("");
-        newStudent.setPhonenumber("");
-        studentRepository.save(newStudent);
-
-        return "OTP has been sent to " + email;
-    }
-
-    // Phương thức xác thực OTP
-    @Override
-    public String verifyOtp(String email, String otp) {
-        Optional<Student> studentOpt = studentRepository.findByEmail(email);
-
-        if (studentOpt.isPresent()) {
-            Student student = studentOpt.get();
-            if (student.getOtpCode().equals(otp) && student.getTimeOtp().isAfter(LocalDateTime.now().minusMinutes(1))) {
-                student.setVerifyStudent(true);
-                studentRepository.save(student);
-                return "OTP verified successfully!";
-            } else {
-                throw new CustomException(ErrorNumber.OTP_EXPIRED);
-            }
-        } else {
-            throw new CustomException(ErrorNumber.EMAIL_NOT_EXISTED);
-        }
-    }
-
-    @Override
     public Optional<StudentResponseDTO> getStudentLoginInfor() {
         Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
         return studentRepository.findById(studentId)
@@ -145,8 +103,20 @@ public class StudentServiceImple implements StudentService {
         if (student.getPassword() == null || student.getPassword().isEmpty()) {
             throw new CustomException(ErrorNumber.PASSWORD_IS_NULL);
         }
+    }
 
-    // Phương thức đăng ký tài khoản và gửi OTP
+    @Override
+    public VerifyOtpResponse verifyOtp(String email, String otp) {
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Email not found"));
+        if (student.getOtpCode().equals(otp) && student.getTimeOtp().isAfter(LocalDateTime.now().minusMinutes(5))) {
+            return new VerifyOtpResponse(true);
+        } else {
+            return new VerifyOtpResponse(false);
+        }
+    }
+
+//     Phương thức đăng ký tài khoản và gửi OTP
 //    @Override
 //    public String registerStudent(String email) {
 //        Optional<Student> existingStudent = studentRepository.findByEmail(email);
@@ -171,21 +141,4 @@ public class StudentServiceImple implements StudentService {
 //
 //        return "OTP has been sent to " + email;
 //    }
-
-    // Phương thức xác thực OTP
-    @Override
-    public VerifyOtpResponse verifyOtp(String email, String otp) {
-        try {
-            Student student = studentRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("Email not found"));
-            if (student.getOtpCode().equals(otp) && student.getTimeOtp().isAfter(LocalDateTime.now().minusMinutes(5))) {
-
-                return new VerifyOtpResponse(true);
-            } else {
-                return new VerifyOtpResponse(false);
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
 }

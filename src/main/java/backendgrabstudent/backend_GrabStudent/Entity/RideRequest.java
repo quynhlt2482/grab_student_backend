@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "riderequest")
+@Table(name = "ride_request")
 public class RideRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +24,8 @@ public class RideRequest {
     private Student passenger;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", referencedColumnName = "id")
-    @JsonIgnore
+    @JoinColumn(name = "post_id")
+//    @JsonIgnore
     private Post post;
 
     @OneToOne(mappedBy = "rideRequest")

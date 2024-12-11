@@ -1,13 +1,18 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.CreatePostRequest;
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.PostUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Post;
+import backendgrabstudent.backend_GrabStudent.Entity.PostType;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
+import backendgrabstudent.backend_GrabStudent.Enums.PostStatusEnum;
+import backendgrabstudent.backend_GrabStudent.Enums.PostTypeEnum;
 import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
 import backendgrabstudent.backend_GrabStudent.Exception.ErrorNumber;
 import backendgrabstudent.backend_GrabStudent.Mapper.PostMapper;
 import backendgrabstudent.backend_GrabStudent.Repository.PostRepository;
+import backendgrabstudent.backend_GrabStudent.Repository.PostTypeRepository;
 import backendgrabstudent.backend_GrabStudent.Repository.StudentRepository;
 import backendgrabstudent.backend_GrabStudent.Security.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,14 +28,16 @@ public class PostServiceImple implements PostService{
     private final StudentRepository studentRepository;
     private final JwtUtil jwtUtil;
     private final PostMapper postMapper;
+    private final PostTypeRepository postTypeRepository;
 
     @Autowired
-    public PostServiceImple(PostRepository postRepository, HttpServletRequest request, StudentRepository studentRepository, JwtUtil jwtUtil, PostMapper postMapper) {
+    public PostServiceImple(PostRepository postRepository, HttpServletRequest request, StudentRepository studentRepository, JwtUtil jwtUtil, PostMapper postMapper, PostTypeRepository postTypeRepository) {
         this.postRepository = postRepository;
         this.request = request;
         this.studentRepository = studentRepository;
         this.jwtUtil = jwtUtil;
         this.postMapper = postMapper;
+        this.postTypeRepository = postTypeRepository;
     }
 
     @Override
@@ -40,12 +47,14 @@ public class PostServiceImple implements PostService{
 
     @Override
     public List<PostResponseDTO> getAllPostsRide(int userId) {
-        return postRepository.findByType("ride", userId);
+        List<Post> posts = postRepository.findAllByPostTypeExcludeUserId(PostTypeEnum.RIDER.toString(), userId);
+        return postMapper.toResponseDTOs(posts);
     }
 
     @Override
     public List<PostResponseDTO> getAllPostsCustomer(int userId) {
-        return postRepository.findByType("customer", userId);
+        List<Post> posts = postRepository.findAllByPostTypeExcludeUserId(PostTypeEnum.PASSENGER.toString(), userId);
+        return postMapper.toResponseDTOs(posts);
     }
 
     @Override
@@ -54,47 +63,47 @@ public class PostServiceImple implements PostService{
     }
 
     @Override
-    public PostResponseDTO createPost(PostResponseDTO postResponseDTO) {
-        Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
-        Post post = getPost(postResponseDTO, student);
+    public PostResponseDTO createPost(CreatePostRequest postRequest) {
+//        Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
+
+        Student student = studentRepository.findById(postRequest.getStudentId())
+                .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
+
+        PostType postType = postTypeRepository.findById(postRequest.getType())
+                .orElseThrow(() -> new CustomException(ErrorNumber.INVALID_POST_TYPE));
+
+        Post post = Post.builder()
+                .student(student)
+                .postType(postType)
+                .dropOffLat(postRequest.getDropOffLat())
+                .dropOffLon(postRequest.getDropOffLon())
+                .pickUpLat(postRequest.getPickUpLat())
+                .pickUpLon(postRequest.getPickUpLon())
+                .pickUpLocation(postRequest.getPickUpLocation())
+                .dropOffLocation(postRequest.getDropOffLocation())
+                .startDate(postRequest.getStartDate())
+                .startTimeString(postRequest.getStartTimeString())
+                .status(postRequest.getStatus())
+                .content(postRequest.getContent())
+                .build();
         Post savedPost = postRepository.save(post);
-        return new PostResponseDTO(savedPost.getId(), studentId, savedPost.getPickUpLocation(),
-                savedPost.getDropOffLocation(), savedPost.getStatus(), savedPost.getType(),
-                savedPost.getPickUpLat(), savedPost.getPickUpLon(), savedPost.getDropOffLat(),
-                savedPost.getDropOffLon(), savedPost.getStartDate(), savedPost.getStartTimeString());
+
+        return postMapper.toResponseDTO(savedPost);
     }
 
-    private static Post getPost(PostResponseDTO postResponseDTO, Student student) {
-        Post post = new Post();
+//    @Override
+//    public List<PostResponseDTO> getPostsByIdLogin() {
+//        Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
+//        Student student = studentRepository.findById(studentId).orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
+//        return postRepository.findByStudentIdLogin(student.getId());
+//    }
 
-        post.setStudent(student);
-        post.setPickUpLocation(postResponseDTO.getPickUpLocation());
-        post.setDropOffLocation(postResponseDTO.getDropOffLocation());
-        post.setStatus(true);
-//        post.setType(postResponseDTO.getType());
-        post.setPickUpLat(postResponseDTO.getPickUpLat());
-        post.setPickUpLon(postResponseDTO.getPickUpLon());
-        post.setDropOffLat(postResponseDTO.getDropOffLat());
-        post.setDropOffLon(postResponseDTO.getDropOffLon());
-        post.setStartDate(postResponseDTO.getStartDate());
-        post.setStartTimeString(postResponseDTO.getStartTimeString());
-        return post;
-    }
-
-    @Override
-    public List<PostResponseDTO> getPostsByIdLogin() {
-        Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
-        return postRepository.findByStudentIdLogin(student.getId());
-    }
-
-    @Override
-    public List<PostResponseDTO> getPostsByIdLoginAndDateRange(String startDateFrom, String startDateTo) {
-        Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
-        Student student = studentRepository.findById(studentId).orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
-        return postRepository.findByStudentIdAndStartDateRange(student.getId(), startDateFrom, startDateTo);
-    }
+//    @Override
+//    public List<PostResponseDTO> getPostsByIdLoginAndDateRange(String startDateFrom, String startDateTo) {
+//        Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
+//        Student student = studentRepository.findById(studentId).orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
+//        return postRepository.findByStudentIdAndStartDateRange(student.getId(), startDateFrom, startDateTo);
+//    }
 
     @Override
     public PostResponseDTO getPostById(int id) {

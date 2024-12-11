@@ -18,5 +18,7 @@ public interface StudentService {
     public boolean existsById(int id);
     public Optional<StudentResponseDTO> getStudentLoginInfor();
 //    public String registerStudent(String email);
-    public VerifyOtpResponse verifyOtp(String email, String otp); // Xác thực OTP
+    public VerifyOtpResponse verifyOtp(String email, String otp);
+
+
 }

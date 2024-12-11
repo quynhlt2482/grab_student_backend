@@ -21,6 +21,4 @@ public class RideRequestDTO {
     private BigDecimal dropOffLat;
     private BigDecimal dropOffLon;
     private String status;
-
-
 }

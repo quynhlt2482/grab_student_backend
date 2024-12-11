@@ -1,8 +1,10 @@
 package backendgrabstudent.backend_GrabStudent.Exception;
 
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ErrorResponse;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ResponseObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -18,6 +20,15 @@ public class GlobalExceptionHandler {
                 errorNumber.getCode()
         );
         return new ResponseEntity<>(errorResponse, errorNumber.getHttpStatus());
+    }
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseObject> handleValidation(MethodArgumentNotValidException exception) {
+
+        return ResponseEntity.badRequest().body(ResponseObject.builder()
+                .code(HttpStatus.BAD_REQUEST.value())
+                .message(exception.getFieldError().getDefaultMessage())
+                .build());
     }
 
     @ExceptionHandler(Exception.class)

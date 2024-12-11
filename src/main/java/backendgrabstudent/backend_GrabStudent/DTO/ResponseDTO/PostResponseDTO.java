@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostResponseDTO {
-    private Integer id;
-    private Integer studentId;
+    Integer id;
+    StudentResponseDTO student;
     private String pickUpLocation;
     private String dropOffLocation;
     private Boolean status;
@@ -22,5 +22,6 @@ public class PostResponseDTO {
     private BigDecimal dropOffLon; // Kinh độ điểm trả
     private String startDate;
     private String startTimeString;
+    private String content;
 }
 

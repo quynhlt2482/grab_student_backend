@@ -14,10 +14,9 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface PostRepository extends JpaRepository<Post, Integer> {
-    @Query(value = "SELECT new backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO(p.id, s.id, p.pickUpLocation, p.dropOffLocation,p.status, p.type, " +
-            "p.pickUpLat, p.pickUpLon, p.dropOffLat, p.dropOffLon, p.startDate, p.startTimeString) " +
-            "FROM Post p JOIN p.student s WHERE p.type = :type and p.student.id != :userId")
-    List<PostResponseDTO> findByType(String type, int userId);
+
+    @Query("select p from Post p where p.postType.name = :type and p.student.id = :userId")
+    List<Post> findAllByPostTypeExcludeUserId(@Param("type") String type, @Param("userId") int userId);
 
     @Transactional
     @Modifying
@@ -29,21 +28,22 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("UPDATE Post p SET p.status = false WHERE p.id = :postId")
     void updatePostStatusById(@Param("postId") Integer postId);
 
-    @Query(value = "SELECT new backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO(" +
-            "p.id, s.id, p.pickUpLocation, p.dropOffLocation, p.status, p.type, " +
-            "p.pickUpLat, p.pickUpLon, p.dropOffLat, p.dropOffLon, p.startDate, p.startTimeString) " +
-            "FROM Post p JOIN p.student s " +
-            "WHERE s.id = :studentId AND p.startDate BETWEEN :startDateFrom AND :startDateTo")
-    List<PostResponseDTO> findByStudentIdAndStartDateRange(
-            @Param("studentId") Integer studentId,
-            @Param("startDateFrom") String startDateFrom,
-            @Param("startDateTo") String startDateTo);
+//    @Query(value = "SELECT new backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO(" +
+//            "p.id, s.id, p.pickUpLocation, p.dropOffLocation, p.status, ps.name, " +
+//            "p.pickUpLat, p.pickUpLon, p.dropOffLat, p.dropOffLon, p.startDate, p.startTimeString) " +
+//            "FROM Post p JOIN p.student s JOIN p.postType ps" +
+//            " s.id = :studentId AND p.startDate BETWEEN :startDateFrom AND :startDateTo")
+//    List<PostResponseDTO> findByStudentIdAndStartDateRange(
+//            @Param("studentId") Integer studentId,
+//            @Param("startDateFrom") String startDateFrom,
+//            @Param("startDateTo") String startDateTo);
 
-    @Query(value = "SELECT new backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO(" +
-            "p.id, s.id, p.pickUpLocation, p.dropOffLocation, p.status, p.type, " +
-            "p.pickUpLat, p.pickUpLon, p.dropOffLat, p.dropOffLon, p.startDate, p.startTimeString) " +
-            "FROM Post p JOIN p.student s " +
-            "WHERE s.id = :studentId")
-    List<PostResponseDTO> findByStudentIdLogin(@Param("studentId") Integer studentId);
+//    @Query(value = "SELECT new backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO(" +
+//            "p.id, s.id, p.pickUpLocation, p.dropOffLocation, p.status, ps.name, " +
+//            "p.pickUpLat, p.pickUpLon, p.dropOffLat, p.dropOffLon, p.startDate, p.startTimeString) " +
+//            "FROM Post p JOIN p.student s JOIN p.postType ps " +  // Thêm khoảng trắng trước WHERE
+//            "WHERE s.id = :studentId")
+//    List<PostResponseDTO> findByStudentIdLogin(@Param("studentId") Integer studentId);
+
 
 }
