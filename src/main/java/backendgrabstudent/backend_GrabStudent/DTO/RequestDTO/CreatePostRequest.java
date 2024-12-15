@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.AccessLevel;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
@@ -40,8 +41,8 @@ public class CreatePostRequest {
      @NotNull(message = "dropOffLon must not be null")
      BigDecimal dropOffLon; // Kinh độ điểm trả
 
-     @NotBlank(message = "startDate must not be blank")
-     String startDate;
+     @NotNull(message = "startDate must not be null")
+     LocalDate startDate;
 
      @NotBlank(message = "startTimeString must not be blank")
      String startTimeString;

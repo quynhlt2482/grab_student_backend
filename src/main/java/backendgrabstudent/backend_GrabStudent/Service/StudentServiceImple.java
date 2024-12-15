@@ -1,5 +1,6 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.StudentPasswordUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.VerifyOtpResponse;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
@@ -92,17 +93,23 @@ public class StudentServiceImple implements StudentService {
     }
 
     @Override
-    public boolean existsById(int id) {
-        return false;
+    public void change2fa(int id, boolean isEnabled) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
+        student.setIs2faEnabled(isEnabled);
+        studentRepository.save(student);
     }
 
     @Override
-    public void updatePassword(int id, String newPassword) {
+    public void updatePassword(int id, StudentPasswordUpdateDTO studentPasswordUpdateDTO) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
-        if (student.getPassword() == null || student.getPassword().isEmpty()) {
-            throw new CustomException(ErrorNumber.PASSWORD_IS_NULL);
+
+        if (!student.getPassword().equals(studentPasswordUpdateDTO.getPassword())) {
+          throw new CustomException(ErrorNumber.INVALID_PASSWORD);
         }
+        student.setPassword(studentPasswordUpdateDTO.getNewPassword());
+        studentRepository.save(student);
     }
 
     @Override

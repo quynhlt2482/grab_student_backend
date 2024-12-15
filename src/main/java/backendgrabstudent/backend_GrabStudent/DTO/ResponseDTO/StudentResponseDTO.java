@@ -1,6 +1,9 @@
 package backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO;
 
 import lombok.*;
+
+import java.time.LocalDate;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -15,4 +18,6 @@ public class StudentResponseDTO {
     private Boolean is2faEnabled;
     private String avatarUrl;
     private Boolean verifyStudent;
+    private LocalDate birthday;
+    private String studentClass;
 }

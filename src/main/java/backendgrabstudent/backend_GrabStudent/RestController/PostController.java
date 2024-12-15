@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -81,16 +82,17 @@ public class PostController {
                 .build();
     }
 
+    @GetMapping("/getByCurrentUser")
+    public ResponseObject<List<PostResponseDTO>> getPostsByIdLogin(
+            @RequestParam("postType") String postType,
+            @RequestParam(value = "status") Boolean status,
+            @RequestParam("startDateFrom") LocalDate startDateFrom,
+            @RequestParam("startDateTo") LocalDate startDateTo
+    ) {
+        List<PostResponseDTO> posts = postService.getPostsByIdLogin(postType, status, startDateFrom, startDateTo);
+        return ResponseObject.<List<PostResponseDTO>>builder()
+                .data(posts)
+                .build();
+    }
 
-//    @GetMapping("/postByIdLogin/dateRange")
-//    public ResponseEntity<List<PostResponseDTO>> getPostsByIdLoginAndDateRange(@RequestParam String startDateFrom, @RequestParam String startDateTo) {
-//        List<PostResponseDTO> posts = postService.getPostsByIdLoginAndDateRange(startDateFrom,startDateTo);
-//        return ResponseEntity.ok(posts);
-//    }
-
-//    @GetMapping("/postByIdLogin")
-//    public ResponseEntity<List<PostResponseDTO>> getPostsByIdLogin() {
-//        List<PostResponseDTO> posts = postService.getPostsByIdLogin();
-//        return ResponseEntity.ok(posts);
-//    }
 }

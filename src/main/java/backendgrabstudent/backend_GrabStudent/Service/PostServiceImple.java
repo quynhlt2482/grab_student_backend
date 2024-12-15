@@ -1,6 +1,7 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.CreatePostRequest;
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.PostFilterRequest;
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.PostUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Post;
@@ -18,6 +19,8 @@ import backendgrabstudent.backend_GrabStudent.Security.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -91,12 +94,21 @@ public class PostServiceImple implements PostService{
         return postMapper.toResponseDTO(savedPost);
     }
 
-//    @Override
-//    public List<PostResponseDTO> getPostsByIdLogin() {
-//        Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
-//        Student student = studentRepository.findById(studentId).orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
-//        return postRepository.findByStudentIdLogin(student.getId());
-//    }
+    @Override
+    public List<PostResponseDTO> getPostsByIdLogin(String postType, Boolean status, LocalDate startDateFrom, LocalDate startDateTo) {
+        Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
+
+        List<Post> posts = postRepository.findAllByCurrentStudent(
+                student.getId(),
+                status,
+                postType,
+                startDateFrom,
+                startDateTo
+        );
+
+        return postMapper.toResponseDTOs(posts);
+    }
 
 //    @Override
 //    public List<PostResponseDTO> getPostsByIdLoginAndDateRange(String startDateFrom, String startDateTo) {

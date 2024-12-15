@@ -48,12 +48,12 @@ public class AuthService {
         String accessToken = jwtUtil.generateToken(student.getEmail(), student.getId());
 
         // Refresh token logic
-        String refreshToken = refreshTokenService.createRefreshToken(student).getToken();
+//        String refreshToken = refreshTokenService.createRefreshToken(student).getToken();
 
         // Tạo response
         return LoginResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
+//                .refreshToken(refreshToken)
                 .studentInfo(studentMapper.studentToStudentResponseDTO(student))
                 .build();
     }

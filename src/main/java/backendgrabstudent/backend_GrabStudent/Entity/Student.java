@@ -3,6 +3,7 @@ package backendgrabstudent.backend_GrabStudent.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,6 +21,8 @@ public class Student {
     private String name;
     private String email;
     private String password;
+    private LocalDate birthday;
+    private String studentClass;
 
     @Column(name = "phonenumber")
     private String phonenumber;
@@ -66,8 +69,8 @@ public class Student {
     @OneToMany(mappedBy = "student")
     private List<ConversationMember> conversationMembers;
 
-    @OneToMany(mappedBy = "student")
-    private List<RefreshToken> refreshTokens;
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+    private RefreshToken refreshTokens;
 
     public Boolean getBanned() {
         return isBanned;

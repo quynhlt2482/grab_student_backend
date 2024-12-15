@@ -9,6 +9,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDate;
+
 @Configuration
 public class InitialDatabase {
     @Bean
@@ -48,6 +50,25 @@ public class InitialDatabase {
                         .is2faEnabled(false)
                         .isBanned(false)
                         .phonenumber("0325677401")
+                        .birthday(LocalDate.of(2002, 11, 17))
+                        .studentClass("K47.CNTT.C")
+                        .ridePoint(100)
+                        .build();
+                studentRepository.save(student);
+            }
+
+            if(!studentRepository.existsByEmail("4701104211@student.edu.vn")) {
+                Student student = Student.builder()
+                        .email("4701104211@student.edu.vn")
+                        .password("123qweasd")
+                        .name("Tui Ten Tao")
+                        .gender(true)
+                        .is2faEnabled(false)
+                        .isBanned(false)
+                        .phonenumber("0325677401")
+                        .birthday(LocalDate.of(2002, 11, 17))
+                        .studentClass("K47.CNTT.C")
+                        .ridePoint(100)
                         .build();
                 studentRepository.save(student);
             }
