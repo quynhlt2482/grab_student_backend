@@ -34,17 +34,25 @@ public class PostController {
                 .build();
     }
 
+    @GetMapping("/{id}")
+    public ResponseObject<PostResponseDTO> getById(@PathVariable Integer id) {
+        PostResponseDTO post = postService.getById(id);
+        return ResponseObject.<PostResponseDTO>builder()
+                .data(post)
+                .build();
+    }
+
     @GetMapping("/rider")
-    public ResponseObject<List<PostResponseDTO>> getAllPostsRides(@RequestParam int userId) {
-        List<PostResponseDTO> posts = postService.getAllPostsRide(userId);
+    public ResponseObject<List<PostResponseDTO>> getAllPostsRides(@RequestParam boolean status, @RequestParam int userId) {
+        List<PostResponseDTO> posts = postService.getAllPostsRide(status, userId);
         return ResponseObject.<List<PostResponseDTO>>builder()
                 .data(posts)
                 .build();
     }
 
     @GetMapping("/passenger")
-    public ResponseObject<List<PostResponseDTO>> getAllPostsCustomer(@RequestParam int userId) {
-        List<PostResponseDTO> posts = postService.getAllPostsCustomer(userId);
+    public ResponseObject<List<PostResponseDTO>> getAllPostsCustomer(@RequestParam boolean status, @RequestParam int userId) {
+        List<PostResponseDTO> posts = postService.getAllPostsCustomer(status, userId);
         return ResponseObject.<List<PostResponseDTO>>builder()
                 .data(posts)
                 .build();
@@ -83,13 +91,13 @@ public class PostController {
     }
 
     @GetMapping("/getByCurrentUser")
-    public ResponseObject<List<PostResponseDTO>> getPostsByIdLogin(
+    public ResponseObject<List<PostResponseDTO>> getByCurrentUser(
             @RequestParam("postType") String postType,
             @RequestParam(value = "status") Boolean status,
             @RequestParam("startDateFrom") LocalDate startDateFrom,
             @RequestParam("startDateTo") LocalDate startDateTo
     ) {
-        List<PostResponseDTO> posts = postService.getPostsByIdLogin(postType, status, startDateFrom, startDateTo);
+        List<PostResponseDTO> posts = postService.getByCurrentUser(postType, status, startDateFrom, startDateTo);
         return ResponseObject.<List<PostResponseDTO>>builder()
                 .data(posts)
                 .build();

@@ -11,25 +11,24 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface PostService {
-    public List<Post> getAllPosts();
+     List<Post> getAllPosts();
 
-    public List<PostResponseDTO> getAllPostsRide(int userId);
+     List<PostResponseDTO> getAllPostsRide(boolean status, int userId);
 
-    public List<PostResponseDTO> getAllPostsCustomer(int userId);
+     List<PostResponseDTO> getAllPostsCustomer(boolean status, int userId);
 
-    public void deletePost(int id);
+     PostResponseDTO getById(int id);
 
-    public void updatePost(Integer id, PostUpdateDTO postUpdateDTO);
+     void deletePost(int id);
 
-    public PostResponseDTO createPost(CreatePostRequest request);
+     void updatePost(Integer id, PostUpdateDTO postUpdateDTO);
 
-    public List<PostResponseDTO> getPostsByIdLogin(String postType, Boolean status, LocalDate startDateFrom, LocalDate startDateTo);
+     PostResponseDTO createPost(CreatePostRequest request);
 
-    //    public List<PostResponseDTO> getPostsByIdLoginAndDateRange(String startDateFrom, String startDateTo );
-    public PostResponseDTO getPostById(int id);
+     List<PostResponseDTO> getByCurrentUser(String postType, Boolean status, LocalDate startDateFrom, LocalDate startDateTo);
 
-    public void updateStatusPostbyAccept(int id);
+     void updateStatusPostbyAccept(int id);
 
     @Scheduled(fixedDelay = 300000)
-    public void updatePostStatusInBatch();
+     void updatePostStatusInBatch();
 }

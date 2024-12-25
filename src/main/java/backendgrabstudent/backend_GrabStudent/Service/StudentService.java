@@ -3,6 +3,7 @@ package backendgrabstudent.backend_GrabStudent.Service;
 
 
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.StudentPasswordUpdateDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.LoginResponse;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.VerifyOtpResponse;
 
@@ -18,6 +19,6 @@ import java.util.Optional;
      void updatePassword(int id, StudentPasswordUpdateDTO request);
      Optional<StudentResponseDTO> getStudentLoginInfor();
 //     String registerStudent(String email);
-     VerifyOtpResponse verifyOtp(String email, String otp);
+LoginResponse verifyOtp(String email, String otp);
      void change2fa(int id, boolean isEnabled);
 }

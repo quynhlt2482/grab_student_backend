@@ -25,7 +25,6 @@ public class RideRequest {
 
     @ManyToOne
     @JoinColumn(name = "post_id")
-//    @JsonIgnore
     private Post post;
 
     @OneToOne(mappedBy = "rideRequest")
@@ -38,4 +37,6 @@ public class RideRequest {
     private BigDecimal dropOffLat;
     private BigDecimal dropOffLon;
     private String status;
+    private String estimatedTime;
+    private String distance;
 }

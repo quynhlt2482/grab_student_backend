@@ -72,6 +72,22 @@ public class InitialDatabase {
                         .build();
                 studentRepository.save(student);
             }
+
+            if(!studentRepository.existsByEmail("test@student.edu.vn")) {
+                Student student = Student.builder()
+                        .email("test@student.edu.vn")
+                        .password("123qweasd")
+                        .name("test user")
+                        .gender(false)
+                        .is2faEnabled(false)
+                        .isBanned(false)
+                        .phonenumber("0325677400")
+                        .birthday(LocalDate.of(2002, 11, 17))
+                        .studentClass("K47.CNTT.TEST")
+                        .ridePoint(80)
+                        .build();
+                studentRepository.save(student);
+            }
         };
     }
 }

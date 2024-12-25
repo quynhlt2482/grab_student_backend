@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class PostServiceImple implements PostService{
+public class PostServiceImple implements PostService {
     private final PostRepository postRepository;
     private final HttpServletRequest request;
     private final StudentRepository studentRepository;
@@ -49,14 +49,21 @@ public class PostServiceImple implements PostService{
     }
 
     @Override
-    public List<PostResponseDTO> getAllPostsRide(int userId) {
-        List<Post> posts = postRepository.findAllByPostTypeExcludeUserId(PostTypeEnum.RIDER.toString(), userId);
+    public PostResponseDTO getById(int id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorNumber.POST_NOT_EXISTED));
+        return postMapper.toResponseDTO(post);
+    }
+
+    @Override
+    public List<PostResponseDTO> getAllPostsRide(boolean status, int userId) {
+        List<Post> posts = postRepository.findAllByPostTypeExcludeUserId(PostTypeEnum.RIDER.toString(), status, userId);
         return postMapper.toResponseDTOs(posts);
     }
 
     @Override
-    public List<PostResponseDTO> getAllPostsCustomer(int userId) {
-        List<Post> posts = postRepository.findAllByPostTypeExcludeUserId(PostTypeEnum.PASSENGER.toString(), userId);
+    public List<PostResponseDTO> getAllPostsCustomer(boolean status, int userId) {
+        List<Post> posts = postRepository.findAllByPostTypeExcludeUserId(PostTypeEnum.PASSENGER.toString(), status, userId);
         return postMapper.toResponseDTOs(posts);
     }
 
@@ -95,7 +102,7 @@ public class PostServiceImple implements PostService{
     }
 
     @Override
-    public List<PostResponseDTO> getPostsByIdLogin(String postType, Boolean status, LocalDate startDateFrom, LocalDate startDateTo) {
+    public List<PostResponseDTO> getByCurrentUser(String postType, Boolean status, LocalDate startDateFrom, LocalDate startDateTo) {
         Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
         Student student = studentRepository.findById(studentId).orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
 
@@ -108,18 +115,6 @@ public class PostServiceImple implements PostService{
         );
 
         return postMapper.toResponseDTOs(posts);
-    }
-
-//    @Override
-//    public List<PostResponseDTO> getPostsByIdLoginAndDateRange(String startDateFrom, String startDateTo) {
-//        Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
-//        Student student = studentRepository.findById(studentId).orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
-//        return postRepository.findByStudentIdAndStartDateRange(student.getId(), startDateFrom, startDateTo);
-//    }
-
-    @Override
-    public PostResponseDTO getPostById(int id) {
-        return null;
     }
 
     @Override
