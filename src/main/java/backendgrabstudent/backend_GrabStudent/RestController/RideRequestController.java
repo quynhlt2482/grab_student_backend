@@ -1,15 +1,14 @@
 package backendgrabstudent.backend_GrabStudent.RestController;
 
-import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideRequestDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideRequestRes;
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideRequestUpdateDTO;
-import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideRequestReponDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ResponseObject;
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideRequestReq;
 import backendgrabstudent.backend_GrabStudent.Service.RideRequestService;
-import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ErrorResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ErrorResponse;
+
 import java.util.List;
 
 @RestController
@@ -23,31 +22,38 @@ public class RideRequestController {
     }
 
     @GetMapping("/fineByPost/{postId}")
-    public ResponseEntity<List<RideRequestDTO>> getRideRequestsByPostId(@PathVariable int postId) {
-        List<RideRequestDTO> rideRequests = rideRequestService.getRideRequestByPostId(postId);
+    public ResponseObject<List<RideRequestRes>> getRideRequestsByPostId(@PathVariable int postId, @RequestParam String status) {
+        List<RideRequestRes> rideRequests = rideRequestService.getRideRequestByPostId(postId, status);
+        return ResponseObject.<List<RideRequestRes>>builder()
+                .data(rideRequests)
+                .build();
+    }
 
-        if (rideRequests.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(rideRequests);
+    @GetMapping
+    public ResponseObject<List<RideRequestRes>> getRideRequestsByUserId(@RequestParam int userId, @RequestParam String status) {
+        List<RideRequestRes> rideRequests = rideRequestService.getRideRequestByUserId(userId, status);
+        return ResponseObject.<List<RideRequestRes>>builder()
+                .data(rideRequests)
+                .build();
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createRideRequest(@RequestBody RideRequestReponDTO rideRequestReponDTO) {
-        RideRequestReponDTO createdRideRequest = rideRequestService.addRideRequest(rideRequestReponDTO);
-        return ResponseEntity.ok(createdRideRequest);
+    public ResponseObject<RideRequestRes> createRideRequest(@Valid @RequestBody RideRequestReq rideRequestReponDTO) {
+        RideRequestRes createdRideRequest = rideRequestService.addRideRequest(rideRequestReponDTO);
+        return ResponseObject.<RideRequestRes>builder()
+                .data(createdRideRequest)
+                .build();
     }
 
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateRideRequest(
+    @PutMapping("/{id}")
+    public ResponseObject<String> updateRideRequest(
             @PathVariable Integer id,
-            @RequestBody RideRequestUpdateDTO rideRequestUpdateDTO) {
-
+            @RequestBody RideRequestUpdateDTO rideRequestUpdateDTO
+    ) {
         rideRequestService.updateRideRequest(id, rideRequestUpdateDTO);
-        return ResponseEntity.ok("RideRequest updated successfully");
+
+        return ResponseObject.<String>builder()
+                .data("RideRequest updated successfully")
+                .build();
     }
-
-
 }

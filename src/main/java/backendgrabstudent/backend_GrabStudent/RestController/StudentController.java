@@ -1,6 +1,7 @@
 package backendgrabstudent.backend_GrabStudent.RestController;
 
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.StudentPasswordUpdateDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.LoginResponse;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ResponseObject;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentManagerReponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
@@ -31,10 +32,10 @@ public class StudentController {
 
     // API để xác thực OTP
     @PostMapping("/verifyOtp")
-    public ResponseObject<VerifyOtpResponse> verifyOtp(@RequestParam String email, @RequestParam String otp) {
+    public ResponseObject<LoginResponse> verifyOtp(@RequestParam String email, @RequestParam String otp) {
         var result = studentService.verifyOtp(email, otp);
 
-        return ResponseObject.<VerifyOtpResponse>builder()
+        return ResponseObject.<LoginResponse>builder()
                 .data(result)
                 .build();
     }

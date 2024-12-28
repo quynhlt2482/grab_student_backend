@@ -1,27 +1,22 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.StudentPasswordUpdateDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.LoginResponse;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentManagerReponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
-import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.VerifyOtpResponse;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
 import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
 import backendgrabstudent.backend_GrabStudent.Exception.ErrorNumber;
 import backendgrabstudent.backend_GrabStudent.Mapper.StudentMapper;
 import backendgrabstudent.backend_GrabStudent.Repository.StudentRepository;
 import backendgrabstudent.backend_GrabStudent.Security.JwtUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -114,13 +109,23 @@ public class StudentServiceImple implements StudentService {
     }
 
     @Override
-    public VerifyOtpResponse verifyOtp(String email, String otp) {
+    public LoginResponse verifyOtp(String email, String otp) {
         Student student = studentRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Email not found"));
+                .orElseThrow(() -> new CustomException(ErrorNumber.EMAIL_NOT_EXISTED));
+
+        // Tạo access token
+        String accessToken = jwtUtil.generateToken(student.getEmail(), student.getId());
+
         if (student.getOtpCode().equals(otp) && student.getTimeOtp().isAfter(LocalDateTime.now().minusMinutes(5))) {
-            return new VerifyOtpResponse(true);
+            return LoginResponse.builder()
+                    .accessToken(accessToken)
+                    .studentInfo(studentMapper.studentToStudentResponseDTO(student))
+                    .build();
         } else {
-            return new VerifyOtpResponse(false);
+            return LoginResponse.builder()
+                    .accessToken(null)
+                    .studentInfo(null)
+                    .build();
         }
     }
 
@@ -131,7 +136,7 @@ public class StudentServiceImple implements StudentService {
                 .collect(Collectors.toList());
     }
 
-    //     Phương thức đăng ký tài khoản và gửi OTP
+//     Phương thức đăng ký tài khoản và gửi OTP
 //    @Override
 //    public String registerStudent(String email) {
 //        Optional<Student> existingStudent = studentRepository.findByEmail(email);

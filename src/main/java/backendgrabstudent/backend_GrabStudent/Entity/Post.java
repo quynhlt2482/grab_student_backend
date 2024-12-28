@@ -26,9 +26,16 @@ public class Post {
     String pickUpLocation;
     String dropOffLocation;
     Boolean status;
+    @Column(precision = 38, scale = 30)
     BigDecimal pickUpLat;
+
+    @Column(precision = 38, scale = 30)
     BigDecimal pickUpLon;
+
+    @Column(precision = 38, scale = 30)
     BigDecimal dropOffLat;
+
+    @Column(precision = 38, scale = 30)
     BigDecimal dropOffLon;
     LocalDate startDate;
     String startTimeString;

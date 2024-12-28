@@ -1,17 +1,30 @@
 package backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-@Data
+
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RideResponseDTO {
-    private String startLocation;
-    private String endLocation;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private String status;
+    Integer id;
+    String riderStartLocation;
+    String riderEndLocation;
+    BigDecimal startLat;
+    BigDecimal startLon;
+    BigDecimal endLat;
+    BigDecimal endLon;
+    LocalDateTime startTime;
+    String status;
+    String estimatedTime;
+    String distance;
+    StudentResponseDTO rider;
+    StudentResponseDTO passenger;
+    RideRequestResponse rideRequest;
 }

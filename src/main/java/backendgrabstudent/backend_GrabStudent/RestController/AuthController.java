@@ -10,6 +10,7 @@ import backendgrabstudent.backend_GrabStudent.Security.JwtUtil;
 import backendgrabstudent.backend_GrabStudent.Service.AuthService;
 import backendgrabstudent.backend_GrabStudent.Service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }

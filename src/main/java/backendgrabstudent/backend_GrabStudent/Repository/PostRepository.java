@@ -15,9 +15,8 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface PostRepository extends JpaRepository<Post, Integer> {
-
-    @Query("select p from Post p where p.postType.name = :type and p.student.id != :userId")
-    List<Post> findAllByPostTypeExcludeUserId(@Param("type") String type, @Param("userId") int userId);
+    @Query("select p from Post p where p.postType.name = :type and p.status = :status and p.student.id != :userId order by p.id desc")
+    List<Post> findAllByPostTypeExcludeUserId(@Param("type") String type, @Param("status") Boolean status, @Param("userId") int userId);
 
     @Transactional
     @Modifying
@@ -33,9 +32,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             "WHERE p.student.id = :studentId " +
             "AND p.postType.name = :postType " +
             "AND p.startDate BETWEEN :startDateFrom AND :startDateTo " +
-            "AND p.status = :isExpiry ")
+            "AND p.status = :status ")
     List<Post> findAllByCurrentStudent(@Param("studentId") Integer studentId,
-                                       @Param("isExpiry") Boolean isExpiry,
+                                       @Param("status") Boolean status,
                                        @Param("postType") String postType,
                                        @Param("startDateFrom") LocalDate startDateFrom,
                                        @Param("startDateTo") LocalDate startDateTo);

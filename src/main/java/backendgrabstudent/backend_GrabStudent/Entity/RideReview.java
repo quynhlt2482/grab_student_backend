@@ -14,18 +14,15 @@ public class RideReview {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @ManyToOne
-    @JoinColumn(name = "ride_id")
-    private Ride ride;
     private Integer rating;
     private String comment;
 
     @ManyToOne
-    @JoinColumn(name = "reviewer_id")
+    private Ride ride;
+
+    @ManyToOne
     private Student reviewer;
 
     @ManyToOne
-    @JoinColumn(name = "is_reviewed_id")
     private Student reviewed;
 }
