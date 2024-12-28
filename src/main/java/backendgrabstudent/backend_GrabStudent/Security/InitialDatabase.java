@@ -56,7 +56,21 @@ public class InitialDatabase {
                         .build();
                 studentRepository.save(student);
             }
-
+            if(!studentRepository.existsByEmail("thanhquynhdhsp@gmail.com")) {
+                Student student = Student.builder()
+                        .email("thanhquynhdhsp@gmail.com")
+                        .password("123456789")
+                        .name("Quynh Toi Choi Bro")
+                        .gender(true)
+                        .is2faEnabled(false)
+                        .isBanned(false)
+                        .phonenumber("0325677401")
+                        .birthday(LocalDate.of(2002, 8, 24))
+                        .studentClass("K47.CNTT.C")
+                        .ridePoint(100)
+                        .build();
+                studentRepository.save(student);
+            }
             if(!studentRepository.existsByEmail("4701104211@student.edu.vn")) {
                 Student student = Student.builder()
                         .email("4701104211@student.edu.vn")

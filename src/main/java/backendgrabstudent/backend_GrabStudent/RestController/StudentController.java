@@ -2,6 +2,7 @@ package backendgrabstudent.backend_GrabStudent.RestController;
 
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.StudentPasswordUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ResponseObject;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentManagerReponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.VerifyOtpResponse;
 import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
@@ -27,12 +28,6 @@ public class StudentController {
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
-
-    // API để đăng ký tài khoản và gửi OTP
-//    @PostMapping("/register")
-//    public String register(@RequestParam String email) {
-//        return studentService.registerStudent(email);
-//    }
 
     // API để xác thực OTP
     @PostMapping("/verifyOtp")
@@ -93,6 +88,9 @@ public class StudentController {
         studentService.updateStudent(studentResponseDTO);
         return ResponseEntity.ok("Student updated successfully");
     }
-
+    @GetMapping("/manager")
+    public List<StudentManagerReponseDTO> getAllStudent() {
+        return studentService.getAllStudentManagerReponse();
+    }
 
 }

@@ -1,6 +1,7 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.StudentPasswordUpdateDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentManagerReponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.VerifyOtpResponse;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
@@ -123,7 +124,14 @@ public class StudentServiceImple implements StudentService {
         }
     }
 
-//     Phương thức đăng ký tài khoản và gửi OTP
+    @Override
+    public List<StudentManagerReponseDTO> getAllStudentManagerReponse() {
+        return studentRepository.findAll().stream()
+                .map(studentMapper::studentToStudentManagerResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    //     Phương thức đăng ký tài khoản và gửi OTP
 //    @Override
 //    public String registerStudent(String email) {
 //        Optional<Student> existingStudent = studentRepository.findByEmail(email);
