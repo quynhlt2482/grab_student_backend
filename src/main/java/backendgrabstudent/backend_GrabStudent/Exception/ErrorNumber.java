@@ -28,6 +28,7 @@ public enum ErrorNumber {
     RIDE_REQUEST_EXISTED(19, "RIDE_REQUEST_EXISTED", HttpStatus.BAD_REQUEST),
     RIDE_EXISTED(20, "RIDE_EXISTED", HttpStatus.BAD_REQUEST),
     SOMETHING_WENT_WRONG(21, "SOMETHING_WENT_WRONG", HttpStatus.BAD_REQUEST),
+    RIDE_REVIEW_NOT_EXISTED(22, "review doesn't exist", HttpStatus.BAD_REQUEST),
     ;
     private final int code;
     private final String message;
