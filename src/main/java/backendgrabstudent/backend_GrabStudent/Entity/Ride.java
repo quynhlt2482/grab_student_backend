@@ -2,50 +2,53 @@ package backendgrabstudent.backend_GrabStudent.Entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
-@Table(name = "ride")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Ride {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @ManyToOne
     @JoinColumn(name = "driver_id", referencedColumnName = "id")
-    private Student driver;
+    Student driver;
 
     @ManyToOne
     @JoinColumn(name = "passenger_id", referencedColumnName = "id")
-    private Student passenger;
+    Student passenger;
 
     @OneToOne
     @JoinColumn(name = "ride_request_id", referencedColumnName = "id", unique = true)
-    private RideRequest rideRequest;
+    RideRequest rideRequest;
 
     @OneToMany(mappedBy = "ride")
-    private List<RideReview> rideReviews;
+    List<RideReview> rideReviews;
 
-    private String riderStartLocation;
-    private String riderEndLocation;
-    private BigDecimal startLat;
-    private BigDecimal startLon;
-    private BigDecimal endLat;
-    private BigDecimal endLon;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private String status;
-    private String estimatedTime;
-    private String distance;
+    String riderStartLocation;
+    String riderEndLocation;
+    @Column(precision = 38, scale = 30) // Ánh xạ thành DECIMAL(20,20)
+    BigDecimal startLat;
+    @Column(precision = 38, scale = 30) // Ánh xạ thành DECIMAL(20,20)
+    BigDecimal startLon;
+    @Column(precision = 38, scale = 30) // Ánh xạ thành DECIMAL(20,20)
+    BigDecimal endLon;
+    @Column(precision = 38, scale = 30) // Ánh xạ thành DECIMAL(20,20)
+    BigDecimal endLat;
+    LocalDateTime startTime;
+    LocalDateTime endTime;
+    String status;
+    String estimatedTime;
+    String distance;
 }

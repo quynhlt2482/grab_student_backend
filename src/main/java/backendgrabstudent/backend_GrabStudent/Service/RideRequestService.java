@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface RideRequestService {
     public List<RideRequestRes> getRideRequestByPostId(int id, String status);
+    public List<RideRequestRes> getRideRequestByUserId(int id, String status);
     public List<RideRequest> getAllRideRequests();
     public void deleteRideRequestByPostId(int id);
     public RideRequestRes addRideRequest(RideRequestReq request);

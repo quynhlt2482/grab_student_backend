@@ -1,18 +1,27 @@
 package backendgrabstudent.backend_GrabStudent.DTO.RequestDTO;
 
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-@Data
-public class PostUpdateDTO {
-    private String pickUpLocation;
-    private String dropOffLocation;
-    private String status;
-    private BigDecimal pickUpLat;
-    private BigDecimal pickUpLon;
-    private BigDecimal dropOffLat;
-    private BigDecimal dropOffLon;
-    private String startDate;
-    private String startTimeString;
 
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class PostUpdateDTO {
+    String pickUpLocation;
+    String dropOffLocation;
+    String status;
+    BigDecimal pickUpLat;
+    BigDecimal pickUpLon;
+    BigDecimal dropOffLat;
+    BigDecimal dropOffLon;
+    String startDate;
+    String startTimeString;
+    String content;
+    String type;
 }

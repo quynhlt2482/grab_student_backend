@@ -29,6 +29,14 @@ public class RideRequestController {
                 .build();
     }
 
+    @GetMapping
+    public ResponseObject<List<RideRequestRes>> getRideRequestsByUserId(@RequestParam int userId, @RequestParam String status) {
+        List<RideRequestRes> rideRequests = rideRequestService.getRideRequestByUserId(userId, status);
+        return ResponseObject.<List<RideRequestRes>>builder()
+                .data(rideRequests)
+                .build();
+    }
+
     @PostMapping("/create")
     public ResponseObject<RideRequestRes> createRideRequest(@Valid @RequestBody RideRequestReq rideRequestReponDTO) {
         RideRequestRes createdRideRequest = rideRequestService.addRideRequest(rideRequestReponDTO);
@@ -37,12 +45,13 @@ public class RideRequestController {
                 .build();
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseObject<String> updateRideRequest(
             @PathVariable Integer id,
-            @RequestBody RideRequestUpdateDTO rideRequestUpdateDTO) {
-
+            @RequestBody RideRequestUpdateDTO rideRequestUpdateDTO
+    ) {
         rideRequestService.updateRideRequest(id, rideRequestUpdateDTO);
+
         return ResponseObject.<String>builder()
                 .data("RideRequest updated successfully")
                 .build();

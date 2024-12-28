@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
 
 @Getter
 @AllArgsConstructor

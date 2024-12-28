@@ -50,6 +50,15 @@ public class RideRequestServiceImple implements RideRequestService {
     }
 
     @Override
+    public List<RideRequestRes> getRideRequestByUserId(int id, String status) {
+        if (!RideRequestStatusEnum.isValidStatus(status)) {
+            throw new CustomException(ErrorNumber.INVALID_STATUS);
+        }
+        List<RideRequest> rideRequests = rideRequestRepository.findAllByUserId(id, status);
+        return rideRequestMapper.toRideRequestDTOs(rideRequests);
+    }
+
+    @Override
     public List<RideRequest> getAllRideRequests() {
         return List.of();
     }
@@ -96,7 +105,7 @@ public class RideRequestServiceImple implements RideRequestService {
     @Override
     public void updateRideRequest(Integer id, RideRequestUpdateDTO rideRequestUpdateDTO) {
         RideRequest rideRequest = rideRequestRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("RideRequest with ID " + id + " not found"));
+                .orElseThrow(() -> new CustomException(ErrorNumber.RIDE_REQUEST_NOT_EXISTED));
 
         if (rideRequestUpdateDTO.getPickUpLocation() != null) {
             rideRequest.setPickUpLocation(rideRequestUpdateDTO.getPickUpLocation());
@@ -115,6 +124,12 @@ public class RideRequestServiceImple implements RideRequestService {
         }
         if (rideRequestUpdateDTO.getDropOffLon() != null) {
             rideRequest.setDropOffLon(rideRequestUpdateDTO.getDropOffLon());
+        }
+        if (rideRequestUpdateDTO.getStatus() != null) {
+            if(!RideRequestStatusEnum.isValidStatus(rideRequestUpdateDTO.getStatus())) {
+                throw new CustomException(ErrorNumber.INVALID_STATUS);
+            }
+            rideRequest.setStatus(rideRequestUpdateDTO.getStatus());
         }
 
         rideRequestRepository.save(rideRequest);

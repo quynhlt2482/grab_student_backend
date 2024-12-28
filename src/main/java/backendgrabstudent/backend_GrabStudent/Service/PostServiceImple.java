@@ -121,7 +121,14 @@ public class PostServiceImple implements PostService {
     public void updatePost(Integer id, PostUpdateDTO postUpdateDTO) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorNumber.POST_NOT_EXISTED));
+
+        if(postUpdateDTO.getType() != null) {
+            PostType postType = postTypeRepository.findById(postUpdateDTO.getType())
+                    .orElseThrow(() -> new CustomException(ErrorNumber.INVALID_POST_TYPE));
+            post.setPostType(postType);
+        }
         postMapper.updatePostFromDTO(postUpdateDTO, post);
+        
         postRepository.save(post);
     }
 

@@ -16,25 +16,17 @@ public class InitialDatabase {
     @Bean
     CommandLineRunner runner(PostTypeRepository postTypeRepository, StudentRepository studentRepository) {
         return args -> {
-            if (!postTypeRepository.existsById(PostTypeEnum.PASSENGER.toString())) {
+            if (!postTypeRepository.existsById(PostTypeEnum.PASSENGER.toString().toLowerCase())) {
                 PostType passenger = PostType.builder()
-                        .name(PostTypeEnum.PASSENGER.toString())
+                        .name(PostTypeEnum.PASSENGER.toString().toLowerCase())
                         .description("PASSENGER post type")
                         .build();
                 postTypeRepository.save(passenger);
             }
 
-            if (!postTypeRepository.existsById(PostTypeEnum.RIDER.toString())) {
+            if (!postTypeRepository.existsById(PostTypeEnum.RIDER.toString().toLowerCase())) {
                 PostType passenger = PostType.builder()
-                        .name(PostTypeEnum.RIDER.toString())
-                        .description("RIDER post type")
-                        .build();
-                postTypeRepository.save(passenger);
-            }
-
-            if (!postTypeRepository.existsById(PostTypeEnum.RIDER.toString())) {
-                PostType passenger = PostType.builder()
-                        .name(PostTypeEnum.RIDER.toString())
+                        .name(PostTypeEnum.RIDER.toString().toLowerCase())
                         .description("RIDER post type")
                         .build();
                 postTypeRepository.save(passenger);
@@ -44,7 +36,7 @@ public class InitialDatabase {
                 Student student = Student.builder()
                         .email("theboyhunter123@gmail.com")
                         .password("123qweasd")
-                        .name("Huynh Thanh Tien")
+                        .name("The Boy Hunter")
                         .avatarUrl("https://kenh14cdn.com/203336854389633024/2022/2/20/photo-1-1645327754811906901966.jpg")
                         .gender(true)
                         .is2faEnabled(false)
@@ -61,8 +53,9 @@ public class InitialDatabase {
                 Student student = Student.builder()
                         .email("4701104211@student.edu.vn")
                         .password("123qweasd")
-                        .name("Tui Ten Tao")
+                        .name("Huỳnh Thanh Tiến")
                         .gender(true)
+                        .avatarUrl("https://res.cloudinary.com/dqp3ftfyl/image/upload/v1728368370/bamito/ezvvdl3mapef2iaze7le.jpg")
                         .is2faEnabled(false)
                         .isBanned(false)
                         .phonenumber("0325677401")
@@ -78,6 +71,7 @@ public class InitialDatabase {
                         .email("test@student.edu.vn")
                         .password("123qweasd")
                         .name("test user")
+                        .avatarUrl("https://res.cloudinary.com/dqp3ftfyl/image/upload/v1729532827/bamito/uh3bqurfmmxoi4aqdpg6.webp")
                         .gender(false)
                         .is2faEnabled(false)
                         .isBanned(false)

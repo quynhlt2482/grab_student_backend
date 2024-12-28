@@ -64,7 +64,10 @@ public class RideServiceImple implements RideService {
         Ride ride = rideRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorNumber.RIDE_NOT_EXISTED));
 
-        return rideMapper.toRideResponse(ride);
+        RideResponseDTO rideResponseDTO = rideMapper.toRideResponse(ride);
+        rideResponseDTO.getRideRequest().setPostId(ride.getRideRequest().getPost().getId());
+
+        return rideResponseDTO;
     }
 
     @Override
@@ -74,7 +77,7 @@ public class RideServiceImple implements RideService {
         RideRequest rideRequest = rideRequestRepository.findById(request.getRequestId())
                 .orElseThrow(() -> new CustomException(ErrorNumber.RIDE_REQUEST_NOT_EXISTED));
 
-        if (rideRepository.existsByRideRequestId(request.getRequestId()) || rideRepository.existsByDriverId(request.getRiderId())) {
+        if (rideRepository.existsByRideRequestId(request.getRequestId()) && rideRepository.existsByDriverId(request.getRiderId())) {
             throw new CustomException(ErrorNumber.RIDE_EXISTED);
         }
         Ride ride = new Ride();
@@ -100,6 +103,12 @@ public class RideServiceImple implements RideService {
         }
         rideRequest.getPost().setStatus(false);
         rideRequest.setStatus(RideRequestStatusEnum.ACCEPTED.toString());
+        rideRequestRepository.save(rideRequest);
+
+        List<RideRequest> pendingRideRequests = rideRequestRepository
+                .findAllByPostId(rideRequest.getPost().getId(), RideRequestStatusEnum.PENDING.toString());
+        pendingRideRequests.forEach(item -> item.setStatus(RideRequestStatusEnum.REJECTED.toString()));
+        rideRequestRepository.saveAll(pendingRideRequests);
 
         rideRepository.save(ride);
 
