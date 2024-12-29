@@ -2,40 +2,53 @@ package backendgrabstudent.backend_GrabStudent.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Table (name = "post")
+@NoArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
+    String pickUpLocation;
+    String dropOffLocation;
+    Boolean status;
+    @Column(precision = 38, scale = 30)
+    BigDecimal pickUpLat;
+
+    @Column(precision = 38, scale = 30)
+    BigDecimal pickUpLon;
+
+    @Column(precision = 38, scale = 30)
+    BigDecimal dropOffLat;
+
+    @Column(precision = 38, scale = 30)
+    BigDecimal dropOffLon;
+    LocalDate startDate;
+    String startTimeString;
+    String content;
+
+    @ManyToOne
+    @JoinColumn(name = "post_type")
+    PostType postType;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    @JsonIgnore
-    private Student student;
+    Student student;
 
-    private String pickUpLocation;
-    private String dropOffLocation;
-    private Boolean status;
-    private String type;
-    private BigDecimal pickUpLat;
-    private BigDecimal pickUpLon;
-    private BigDecimal dropOffLat;
-    private BigDecimal dropOffLon;
-    private String startDate;
-    private String startTimeString;
-
-
+    @OneToMany(mappedBy = "post")
+    Set<RideRequest> rideRequests;
 }

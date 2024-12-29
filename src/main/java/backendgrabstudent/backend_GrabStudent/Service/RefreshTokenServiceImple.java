@@ -32,16 +32,16 @@ public class RefreshTokenServiceImple implements RefreshTokenService {
         this.jwtUtil = jwtUtil;
     }
 
-    @Override
-    public RefreshToken createRefreshToken(Student student) {
-        RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setToken(UUID.randomUUID().toString());
-        refreshToken.setStudent(student);
-        refreshToken.setCreatedAt(LocalDateTime.now());
-        refreshToken.setExpiryDatetime(LocalDateTime.now().plusSeconds(refreshTokenExpiryDuration));
-        refreshToken.setRevoked(false);
-        return refreshTokenRepository.save(refreshToken);
-    }
+//    @Override
+//    public RefreshToken createRefreshToken(Student student) {
+//        RefreshToken refreshToken = new RefreshToken();
+//        refreshToken.setToken(UUID.randomUUID().toString());
+//        refreshToken.setStudent(student);
+//        refreshToken.setCreatedAt(LocalDateTime.now());
+//        refreshToken.setExpiryDatetime(LocalDateTime.now().plusSeconds(refreshTokenExpiryDuration));
+//        refreshToken.setRevoked(false);
+//        return refreshTokenRepository.save(refreshToken);
+//    }
 
     @Override
     public RefreshToken getRefreshToken(String token) {

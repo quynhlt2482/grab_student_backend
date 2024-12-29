@@ -1,13 +1,15 @@
 package backendgrabstudent.backend_GrabStudent.DTO.RequestDTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class StudentPasswordUpdateDTO {
-    private String password;
-
+    @NotBlank(message = "password must not be blank")
+    String password;
+    @NotBlank(message = "newPassword must not be blank")
+    String newPassword;
 }

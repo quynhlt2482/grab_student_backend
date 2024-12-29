@@ -16,9 +16,8 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
-
-    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 2; // 1 hour
-    private final long REFRESH_TOKEN_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
+    private final long EXPIRATION_TIME = 1000000000   * 60 * 60 * 2; // 1 hour
+    private final long REFRESH_TOKEN_EXPIRATION_TIME = 100000 * 60 * 60 * 24 * 7;
 
     public String generateToken(String email, Integer studentId) {
         return Jwts.builder()

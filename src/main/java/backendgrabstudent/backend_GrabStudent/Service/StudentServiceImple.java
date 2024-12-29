@@ -1,5 +1,8 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.StudentPasswordUpdateDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.LoginResponse;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentManagerReponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
 import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
@@ -7,17 +10,13 @@ import backendgrabstudent.backend_GrabStudent.Exception.ErrorNumber;
 import backendgrabstudent.backend_GrabStudent.Mapper.StudentMapper;
 import backendgrabstudent.backend_GrabStudent.Repository.StudentRepository;
 import backendgrabstudent.backend_GrabStudent.Security.JwtUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,7 +29,7 @@ public class StudentServiceImple implements StudentService {
     private final JwtUtil jwtUtil;
 
     @Autowired
-    public StudentServiceImple(StudentRepository studentRepository, StudentMapper studentMapper, EmailService emailService, HttpServletRequest request, JwtUtil jwtUtil ) {
+    public StudentServiceImple(StudentRepository studentRepository, StudentMapper studentMapper, EmailService emailService, HttpServletRequest request, JwtUtil jwtUtil) {
         this.studentRepository = studentRepository;
         this.studentMapper = studentMapper;
         this.emailService = emailService;
@@ -83,48 +82,6 @@ public class StudentServiceImple implements StudentService {
     }
 
     @Override
-    public String registerStudent(String email) {
-        Optional<Student> existingStudent = studentRepository.findByEmail(email);
-        if (existingStudent.isPresent()) {
-            throw new CustomException(ErrorNumber.EMAIL_IS_EXIST);
-        }
-
-        String otp = emailService.generateOTP();
-        emailService.sendOTPEmail(email, otp);
-
-        Student newStudent = new Student();
-        newStudent.setEmail(email);
-        newStudent.setOtpCode(otp);
-        newStudent.setTimeOtp(LocalDateTime.now());
-        newStudent.setVerifyStudent(false);
-        newStudent.setName("");
-        newStudent.setPassword("");
-        newStudent.setPhonenumber("");
-        studentRepository.save(newStudent);
-
-        return "OTP has been sent to " + email;
-    }
-
-    // Phương thức xác thực OTP
-    @Override
-    public String verifyOtp(String email, String otp) {
-        Optional<Student> studentOpt = studentRepository.findByEmail(email);
-
-        if (studentOpt.isPresent()) {
-            Student student = studentOpt.get();
-            if (student.getOtpCode().equals(otp) && student.getTimeOtp().isAfter(LocalDateTime.now().minusMinutes(1))) {
-                student.setVerifyStudent(true);
-                studentRepository.save(student);
-                return "OTP verified successfully!";
-            } else {
-                throw new CustomException(ErrorNumber.OTP_EXPIRED);
-            }
-        } else {
-            throw new CustomException(ErrorNumber.EMAIL_NOT_EXISTED);
-        }
-    }
-
-    @Override
     public Optional<StudentResponseDTO> getStudentLoginInfor() {
         Integer studentId = jwtUtil.extractStudentIdFromRequest(request);
         return studentRepository.findById(studentId)
@@ -132,22 +89,76 @@ public class StudentServiceImple implements StudentService {
     }
 
     @Override
-    public boolean existsById(int id) {
-        return studentRepository.existsById(id);
+    public void change2fa(int id, boolean isEnabled) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
+        student.setIs2faEnabled(isEnabled);
+        studentRepository.save(student);
     }
 
     @Override
-    public void updatePassword(int id, String newPassword) {
+    public void updatePassword(int id, StudentPasswordUpdateDTO studentPasswordUpdateDTO) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
-        if (student.getPassword() == null || student.getPassword().isEmpty()) {
-            throw new CustomException(ErrorNumber.PASSWORD_IS_NULL);
+
+        if (!student.getPassword().equals(studentPasswordUpdateDTO.getPassword())) {
+          throw new CustomException(ErrorNumber.INVALID_PASSWORD);
         }
-
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String hashedPassword = encoder.encode(newPassword);
-
-        student.setPassword(hashedPassword);
+        student.setPassword(studentPasswordUpdateDTO.getNewPassword());
         studentRepository.save(student);
     }
+
+    @Override
+    public LoginResponse verifyOtp(String email, String otp) {
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorNumber.EMAIL_NOT_EXISTED));
+
+        // Tạo access token
+        String accessToken = jwtUtil.generateToken(student.getEmail(), student.getId());
+
+        if (student.getOtpCode().equals(otp) && student.getTimeOtp().isAfter(LocalDateTime.now().minusMinutes(5))) {
+            return LoginResponse.builder()
+                    .accessToken(accessToken)
+                    .studentInfo(studentMapper.studentToStudentResponseDTO(student))
+                    .build();
+        } else {
+            return LoginResponse.builder()
+                    .accessToken(null)
+                    .studentInfo(null)
+                    .build();
+        }
+    }
+
+    @Override
+    public List<StudentManagerReponseDTO> getAllStudentManagerReponse() {
+        return studentRepository.findAll().stream()
+                .map(studentMapper::studentToStudentManagerResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+//     Phương thức đăng ký tài khoản và gửi OTP
+//    @Override
+//    public String registerStudent(String email) {
+//        Optional<Student> existingStudent = studentRepository.findByEmail(email);
+//        if (existingStudent.isPresent()) {
+//            return "Email already registered!";
+//        }
+//
+//        // Gửi OTP và tạo bản ghi sinh viên mới
+//        String otp = emailService.generateOTP();
+//        emailService.sendOTPEmail(email, otp);
+//
+//        // Tạo bản ghi mới trong cơ sở dữ liệu
+//        Student newStudent = new Student();
+//        newStudent.setEmail(email);
+//        newStudent.setOtpCode(otp);
+//        newStudent.setTimeOtp(LocalDateTime.now());
+//        newStudent.setVerifyStudent(false);
+//        newStudent.setName("");
+//        newStudent.setPassword("");
+//        newStudent.setPhonenumber("");
+//        studentRepository.save(newStudent);
+//
+//        return "OTP has been sent to " + email;
+//    }
 }

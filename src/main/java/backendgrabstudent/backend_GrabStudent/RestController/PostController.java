@@ -1,15 +1,19 @@
 package backendgrabstudent.backend_GrabStudent.RestController;
 
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.CreatePostRequest;
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.PostUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ResponseObject;
 import backendgrabstudent.backend_GrabStudent.Entity.Post;
 import backendgrabstudent.backend_GrabStudent.Service.PostService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -23,58 +27,80 @@ public class PostController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Post>> getPosts() {
+    public ResponseObject<List<Post>> getPosts() {
         List<Post> posts = postService.getAllPosts();
-        return ResponseEntity.ok(posts);
+        return ResponseObject.<List<Post>>builder()
+                .data(posts)
+                .build();
     }
 
-    @GetMapping("/rides")
-    public ResponseEntity<List<PostResponseDTO>> getAllPostsRides() {
-        List<PostResponseDTO> posts = postService.getAllPostsRide();
-        return ResponseEntity.ok(posts);
+    @GetMapping("/{id}")
+    public ResponseObject<PostResponseDTO> getById(@PathVariable Integer id) {
+        PostResponseDTO post = postService.getById(id);
+        return ResponseObject.<PostResponseDTO>builder()
+                .data(post)
+                .build();
     }
-    @GetMapping("/customer")
-    public ResponseEntity<List<PostResponseDTO>> getAllPostsCustomer() {
-        List<PostResponseDTO> posts = postService.getAllPostsCustomer();
-        return ResponseEntity.ok(posts);
+
+    @GetMapping("/rider")
+    public ResponseObject<List<PostResponseDTO>> getAllPostsRides(@RequestParam boolean status, @RequestParam int userId) {
+        List<PostResponseDTO> posts = postService.getAllPostsRide(status, userId);
+        return ResponseObject.<List<PostResponseDTO>>builder()
+                .data(posts)
+                .build();
     }
+
+    @GetMapping("/passenger")
+    public ResponseObject<List<PostResponseDTO>> getAllPostsCustomer(@RequestParam boolean status, @RequestParam int userId) {
+        List<PostResponseDTO> posts = postService.getAllPostsCustomer(status, userId);
+        return ResponseObject.<List<PostResponseDTO>>builder()
+                .data(posts)
+                .build();
+    }
+
     @PostMapping("/create")
-    public ResponseEntity<PostResponseDTO> createPost(@RequestBody PostResponseDTO postResponseDTO) {
-            PostResponseDTO createdPost = postService.createPost(postResponseDTO);
-            return ResponseEntity.ok(createdPost);
+    public ResponseObject<PostResponseDTO> createPost(@Valid @RequestBody CreatePostRequest request) {
+        PostResponseDTO createdPost = postService.createPost(request);
+        return ResponseObject.<PostResponseDTO>builder()
+                .data(createdPost)
+                .build();
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updatePost(
-            @PathVariable Integer id,
-            @RequestBody PostUpdateDTO postUpdateDTO) {
-
+    public ResponseObject<String> updatePost(@PathVariable Integer id, @RequestBody PostUpdateDTO postUpdateDTO) {
         postService.updatePost(id, postUpdateDTO);
-        return ResponseEntity.ok("Post updated successfully");
+        return ResponseObject.<String>builder()
+                .data("Post updated successfully")
+                .build();
     }
 
     @PutMapping("/updateAccept/{id}")
-    public ResponseEntity<String> updatePostAccept(@PathVariable Integer id) {
-            postService.updateStatusPostbyAccept(id);
-            return ResponseEntity.ok("Post accept successfully.");
+    public ResponseObject<String> updatePostAccept(@PathVariable Integer id) {
+        postService.updateStatusPostbyAccept(id);
+        return ResponseObject.<String>builder()
+                .data("Post accept successfully.")
+                .build();
     }
-
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable int id) {
-            postService.deletePost(id);
-            return ResponseEntity.ok("Post with ID " + id + " deleted successfully.");
+    public ResponseObject<String> deletePost(@PathVariable int id) {
+        postService.deletePost(id);
+        return ResponseObject.<String>builder()
+                .data("Post with ID " + id + " deleted successfully.")
+                .build();
     }
 
-    @GetMapping("/postByIdLogin/dateRange")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByIdLoginAndDateRange(@RequestParam String startDateFrom, @RequestParam String startDateTo) {
-        List<PostResponseDTO> posts = postService.getPostsByIdLoginAndDateRange(startDateFrom,startDateTo);
-        return ResponseEntity.ok(posts);
+    @GetMapping("/getByCurrentUser")
+    public ResponseObject<List<PostResponseDTO>> getByCurrentUser(
+            @RequestParam("postType") String postType,
+            @RequestParam(value = "status") Boolean status,
+            @RequestParam("startDateFrom") LocalDate startDateFrom,
+            @RequestParam("startDateTo") LocalDate startDateTo
+    ) {
+        List<PostResponseDTO> posts = postService.getByCurrentUser(postType, status, startDateFrom, startDateTo);
+        return ResponseObject.<List<PostResponseDTO>>builder()
+                .data(posts)
+                .build();
     }
 
-    @GetMapping("/postByIdLogin")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByIdLogin() {
-        List<PostResponseDTO> posts = postService.getPostsByIdLogin();
-        return ResponseEntity.ok(posts);
-    }
 }

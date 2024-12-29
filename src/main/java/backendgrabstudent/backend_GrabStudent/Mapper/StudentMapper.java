@@ -1,5 +1,6 @@
 package backendgrabstudent.backend_GrabStudent.Mapper;
 
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentManagerReponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
 import org.mapstruct.Mapper;
@@ -11,4 +12,5 @@ public interface StudentMapper {
 
     StudentResponseDTO studentToStudentResponseDTO(Student student);
     Student studentResponseDTOToStudent(StudentResponseDTO studentResponseDTO);
+    StudentManagerReponseDTO studentToStudentManagerResponseDTO(Student student);
 }

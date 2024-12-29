@@ -1,6 +1,5 @@
-package backendgrabstudent.backend_GrabStudent.DTO.RequestDTO;
+package backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO;
 
-import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PassengerDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RideRequestDTO {
+public class RideRequestRes {
     private Integer id;
     private PassengerDTO passenger;
     private Integer postId;
@@ -21,6 +20,6 @@ public class RideRequestDTO {
     private BigDecimal dropOffLat;
     private BigDecimal dropOffLon;
     private String status;
-
-
+    private String estimatedTime;
+    private String distance;
 }

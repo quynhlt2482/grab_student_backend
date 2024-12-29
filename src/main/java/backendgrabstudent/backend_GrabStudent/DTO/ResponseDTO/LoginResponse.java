@@ -1,15 +1,21 @@
 package backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginResponse {
-    private String accessToken;
-    private String refreshToken;
+    String accessToken;
+    String refreshToken;
+    StudentResponseDTO studentInfo;
 
+    public LoginResponse(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+    }
 }
