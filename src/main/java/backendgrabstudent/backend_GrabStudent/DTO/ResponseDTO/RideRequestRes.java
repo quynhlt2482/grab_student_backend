@@ -11,8 +11,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class RideRequestRes {
     private Integer id;
-    private PassengerDTO passenger;
-    private Integer postId;
+    private StudentResponseDTO passenger;
+    private PostResponseDTO post;
     private String pickUpLocation;
     private String dropOffLocation;
     private BigDecimal pickUpLat;

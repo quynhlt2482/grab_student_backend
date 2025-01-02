@@ -45,7 +45,7 @@ public class InitialDatabase {
                         .birthday(LocalDate.of(2002, 11, 17))
                         .studentClass("K47.CNTT.C")
                         .ridePoint(100)
-                        .verifyStudent(true)
+                        .rating(0.0f)
                         .build();
                 studentRepository.save(student);
             }
@@ -61,7 +61,7 @@ public class InitialDatabase {
                         .birthday(LocalDate.of(2002, 8, 24))
                         .studentClass("K47.CNTT.C")
                         .ridePoint(100)
-                        .verifyStudent(true)
+                        .rating(0.0f)
                         .build();
                 studentRepository.save(student);
             }
@@ -78,7 +78,7 @@ public class InitialDatabase {
                         .birthday(LocalDate.of(2002, 11, 17))
                         .studentClass("K47.CNTT.C")
                         .ridePoint(100)
-                        .verifyStudent(true)
+                        .rating(0.0f)
                         .build();
                 studentRepository.save(student);
             }
@@ -96,7 +96,7 @@ public class InitialDatabase {
                         .birthday(LocalDate.of(2002, 11, 17))
                         .studentClass("K47.CNTT.TEST")
                         .ridePoint(80)
-                        .verifyStudent(true)
+                        .rating(0.0f)
                         .build();
                 studentRepository.save(student);
             }

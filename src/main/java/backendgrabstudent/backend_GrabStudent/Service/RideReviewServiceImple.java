@@ -32,12 +32,34 @@ public class RideReviewServiceImple implements RideReviewService {
 
     @Override
     public RideReviewResponseDTO createRideReview(RideReviewRequestDTO requestDTO) {
+        if (
+                rideReviewRepository.existsByReviewerId(requestDTO.getReviewerId()) &&
+                rideReviewRepository.existsByReviewedId(requestDTO.getReviewedId()) &&
+                rideReviewRepository.existsByRideId(requestDTO.getRideId())
+        ) {
+            throw new CustomException(ErrorNumber.REVIEW_EXISTED);
+        }
         Ride ride = rideRepository.findById(requestDTO.getRideId())
                 .orElseThrow(() -> new CustomException(ErrorNumber.RIDE_NOT_EXISTED));
         Student reviewer = studentRepository.findById(requestDTO.getReviewerId())
                 .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
         Student reviewed = studentRepository.findById(requestDTO.getReviewedId())
                 .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
+
+        int updatedRidePoint = reviewed.getRidePoint();
+        if (requestDTO.getRating() == 5.0f) {
+            updatedRidePoint += 20;
+        } else if (requestDTO.getRating() >= 4.0f) {
+            updatedRidePoint += 10;
+        } else if (requestDTO.getRating() >= 2.0f) {
+            updatedRidePoint -= 10;
+        } else if (requestDTO.getRating() >= 1.0f) {
+            updatedRidePoint -= 20;
+        }
+        if (updatedRidePoint > 100) {
+            updatedRidePoint = 100;
+        }
+        reviewed.setRidePoint(updatedRidePoint);
 
         RideReview rideReview = new RideReview();
         rideReview.setRating(requestDTO.getRating());
@@ -47,6 +69,14 @@ public class RideReviewServiceImple implements RideReviewService {
         rideReview.setReviewed(reviewed);
 
         RideReview savedRideReview = rideReviewRepository.save(rideReview);
+
+        // Cập nhật trung bình rating cho reviewed
+        Double averageRating = rideReviewRepository
+                .findAverageRatingByReviewedId(reviewed.getId())
+                .orElse(0.0);
+        reviewed.setRating(averageRating.floatValue());
+        studentRepository.save(reviewed); // Lưu thay đổi
+
         return rideReviewMapper.toRideReviewResponseDTO(savedRideReview);
     }
 

@@ -4,6 +4,7 @@ import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideReviewRequestDT
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ResponseObject;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideReviewResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Service.RideReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class RideReviewController {
     private final RideReviewService rideReviewService;
 
     @PostMapping
-    public ResponseObject<RideReviewResponseDTO> createRideReview(@RequestBody RideReviewRequestDTO requestDTO) {
+    public ResponseObject<RideReviewResponseDTO> createRideReview(@Valid @RequestBody RideReviewRequestDTO requestDTO) {
         RideReviewResponseDTO createdReview = rideReviewService.createRideReview(requestDTO);
         return ResponseObject.<RideReviewResponseDTO>builder()
                 .data(createdReview)

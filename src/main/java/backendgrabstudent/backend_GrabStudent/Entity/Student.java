@@ -23,6 +23,7 @@ public class Student {
     private String password;
     private LocalDate birthday;
     private String studentClass;
+    private Float rating;
 
     @Column(name = "phonenumber")
     private String phonenumber;
