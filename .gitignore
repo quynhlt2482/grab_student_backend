@@ -3,6 +3,9 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+# Ignore application properties in src
+src/main/resources/*.properties
+
 
 ### STS ###
 .apt_generated
