@@ -1,11 +1,7 @@
 package backendgrabstudent.backend_GrabStudent.RestController;
 
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.StudentPasswordUpdateDTO;
-import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.LoginResponse;
-import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ResponseObject;
-import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentManagerReponseDTO;
-import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
-import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.VerifyOtpResponse;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.*;
 import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
 import backendgrabstudent.backend_GrabStudent.Service.StudentService;
 import jakarta.mail.MessagingException;
@@ -89,9 +85,17 @@ public class StudentController {
         studentService.updateStudent(studentResponseDTO);
         return ResponseEntity.ok("Student updated successfully");
     }
+
     @GetMapping("/manager")
     public List<StudentManagerReponseDTO> getAllStudent() {
         return studentService.getAllStudentManagerReponse();
     }
 
+    @GetMapping("/rating")
+    public ResponseObject<Float> getStudentRating(@RequestParam Integer id) {
+        Float rating = studentService.getStudentRating(id);
+        return ResponseObject.<Float>builder()
+                .data(rating)
+                .build();
+    }
 }

@@ -100,6 +100,13 @@ public class RideServiceImple implements RideService {
             ride.setStartLat(request.getStartLat());
             ride.setEndLon(request.getEndLon());
             ride.setEndLat(request.getEndLat());
+        } else {
+            ride.setRiderStartLocation(rideRequest.getPickUpLocation());
+            ride.setRiderEndLocation(rideRequest.getDropOffLocation());
+            ride.setStartLon(rideRequest.getPickUpLon());
+            ride.setStartLat(rideRequest.getPickUpLat());
+            ride.setEndLon(rideRequest.getDropOffLon());
+            ride.setEndLat(rideRequest.getDropOffLat());
         }
         rideRequest.getPost().setStatus(false);
         rideRequest.setStatus(RideRequestStatusEnum.ACCEPTED.toString());
@@ -148,7 +155,7 @@ public class RideServiceImple implements RideService {
         Ride ride = rideRepository.findById(rideId)
                 .orElseThrow(() -> new CustomException(ErrorNumber.RIDE_NOT_EXISTED));
 
-        ride.setStatus("Done");
+        ride.setStatus(RideStatusEnum.DONE.toString());
         rideRepository.save(ride);
     }
 
@@ -157,7 +164,7 @@ public class RideServiceImple implements RideService {
         Ride ride = rideRepository.findById(rideId)
                 .orElseThrow(() -> new CustomException(ErrorNumber.RIDE_NOT_EXISTED));
 
-        ride.setStatus("Cancel");
+        ride.setStatus(RideStatusEnum.CANCELED.toString());
         rideRepository.save(ride);
     }
 

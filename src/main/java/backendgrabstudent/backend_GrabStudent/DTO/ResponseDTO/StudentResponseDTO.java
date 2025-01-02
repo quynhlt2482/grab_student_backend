@@ -20,4 +20,5 @@ public class StudentResponseDTO {
     private Boolean verifyStudent;
     private LocalDate birthday;
     private String studentClass;
+    private Float rating;
 }

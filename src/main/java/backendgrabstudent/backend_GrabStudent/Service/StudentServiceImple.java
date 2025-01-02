@@ -38,6 +38,14 @@ public class StudentServiceImple implements StudentService {
     }
 
     @Override
+    public Float getStudentRating(int id) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
+
+        return student.getRating();
+    }
+
+    @Override
     public List<StudentResponseDTO> getAllStudent() {
         return studentRepository.findAll().stream()
                 .map(studentMapper::studentToStudentResponseDTO)

@@ -10,7 +10,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface RideRequestMapper {
-    @Mapping(source = "post.id", target = "postId")
     RideRequestRes toRideRequestDTO(RideRequest rideRequest);
 
     @Mapping(source = "post.id", target = "postId")
