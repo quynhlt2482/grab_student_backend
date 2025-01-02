@@ -13,4 +13,5 @@ public interface StudentMapper {
     StudentResponseDTO studentToStudentResponseDTO(Student student);
     Student studentResponseDTOToStudent(StudentResponseDTO studentResponseDTO);
     StudentManagerReponseDTO studentToStudentManagerResponseDTO(Student student);
+    Student studentManagerResponseDTOToStudent(StudentManagerReponseDTO studentManagerResponseDTO);
 }

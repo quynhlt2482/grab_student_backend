@@ -86,7 +86,7 @@ public class StudentServiceImple implements StudentService {
 
     @Override
     public void deleteStudent(int id) {
-        studentRepository.deleteById(id);
+        studentRepository.deleteStudent(id);
     }
 
     @Override
@@ -139,12 +139,33 @@ public class StudentServiceImple implements StudentService {
 
     @Override
     public List<StudentManagerReponseDTO> getAllStudentManagerReponse() {
-        return studentRepository.findAll().stream()
+        return studentRepository.findAllStudent().stream()
                 .map(studentMapper::studentToStudentManagerResponseDTO)
                 .collect(Collectors.toList());
     }
 
-//     Phương thức đăng ký tài khoản và gửi OTP
+    @Override
+    public StudentManagerReponseDTO updateUserinManager(StudentManagerReponseDTO studentManagerReponseDTO) {
+        Student student = studentMapper.studentManagerResponseDTOToStudent(studentManagerReponseDTO);
+
+        studentRepository.findById(student.getId()).orElseThrow(() ->
+                new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED)
+        );
+
+        if (student.getPassword() == null) {
+            student.setPassword(studentRepository.findById(student.getId())
+                    .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED))
+                    .getPassword());
+        }
+
+        // Lưu và trả về DTO
+        Student savedStudent = studentRepository.save(student);
+        return studentMapper.studentToStudentManagerResponseDTO(savedStudent);
+    }
+
+
+
+    //     Phương thức đăng ký tài khoản và gửi OTP
 //    @Override
 //    public String registerStudent(String email) {
 //        Optional<Student> existingStudent = studentRepository.findByEmail(email);

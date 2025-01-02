@@ -25,7 +25,8 @@ public interface StudentService {
 
     Optional<StudentResponseDTO> getStudentLoginInfor();
 
-    //     String registerStudent(String email);
+    StudentManagerReponseDTO updateUserinManager(StudentManagerReponseDTO studentManagerReponseDTO);
+
     List<StudentManagerReponseDTO> getAllStudentManagerReponse();
 
     LoginResponse verifyOtp(String email, String otp);
