@@ -5,17 +5,12 @@ import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.LoginResponse;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ResponseObject;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentManagerReponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.StudentResponseDTO;
-import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.VerifyOtpResponse;
-import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
 import backendgrabstudent.backend_GrabStudent.Service.StudentService;
-import jakarta.mail.MessagingException;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.*;
 
@@ -52,6 +47,8 @@ public class StudentController {
                 .build();
     }
 
+
+
     @PutMapping("/update2fa")
     public ResponseObject<?> update2fa(@RequestParam Integer id, @RequestParam Boolean isEnabled) {
         studentService.change2fa(id, isEnabled);
@@ -70,11 +67,6 @@ public class StudentController {
         return studentService.getStudentLoginInfor();
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable int id) {
-        studentService.deleteStudent(id);
-        return ResponseEntity.ok("Student with ID " + id + " deleted successfully.");
-    }
 
     @PostMapping("/create")
     public ResponseEntity<String> createStudent(@RequestBody StudentResponseDTO studentResponseDTO) {
@@ -89,6 +81,24 @@ public class StudentController {
         studentService.updateStudent(studentResponseDTO);
         return ResponseEntity.ok("Student updated successfully");
     }
+
+    @PutMapping("/manager/update/{id}")
+    public ResponseObject<String> updateStudentManager(@PathVariable int id, @RequestBody StudentManagerReponseDTO studentManagerResponseDTO) {
+        studentManagerResponseDTO.setId(id);
+        studentService.updateUserinManager(studentManagerResponseDTO);
+        return ResponseObject.<String>builder()
+                .data("Student updated successfully")
+                .build();
+    }
+
+    @PutMapping("/manager/delete/{id}")
+    public ResponseObject<String> deleteStudent(@PathVariable int id) {
+        studentService.deleteStudent(id);
+        return ResponseObject.<String>builder()
+                .data("Student delete with " + id + " success")
+                .build();
+    }
+
     @GetMapping("/manager")
     public List<StudentManagerReponseDTO> getAllStudent() {
         return studentService.getAllStudentManagerReponse();
