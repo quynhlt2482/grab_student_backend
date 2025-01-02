@@ -32,6 +32,7 @@ public enum ErrorNumber {
     INVALID_TYPE(23, "INVALID TYPE", HttpStatus.BAD_REQUEST),
     NOTIFICATION_NOT_EXISTED(24, "NOTIFICATION doesn't exist", HttpStatus.NOT_FOUND),
     REVIEW_EXISTED(25, "REVIEW_EXISTED", HttpStatus.BAD_REQUEST),
+    CONVERSATION_NOT_EXISTED(26, "CONVERSATION_NOT_EXISTED", HttpStatus.BAD_REQUEST),
     ;
     private final int code;
     private final String message;

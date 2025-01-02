@@ -27,7 +27,7 @@ public class Student {
 
     @Column(name = "phonenumber")
     private String phonenumber;
-    
+
     @Column(name = "ride_point")
     private Integer ridePoint;
 
@@ -66,9 +66,6 @@ public class Student {
 
     @OneToMany(mappedBy = "reviewed")
     private List<RideReview> reviewedRides;
-
-    @OneToMany(mappedBy = "student")
-    private List<ConversationMember> conversationMembers;
 
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
     private RefreshToken refreshTokens;

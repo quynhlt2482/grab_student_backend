@@ -21,8 +21,11 @@ public class Conversation {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "conversation")
-    private List<ConversationMember> members;
+    @ManyToOne
+    private Student student1;
+
+    @ManyToOne
+    private Student student2;
 
     @OneToMany(mappedBy = "conversation")
     private List<Message> messages;
