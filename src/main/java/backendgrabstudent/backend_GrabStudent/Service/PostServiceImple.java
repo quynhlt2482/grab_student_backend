@@ -44,8 +44,9 @@ public class PostServiceImple implements PostService {
     }
 
     @Override
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public List<PostResponseDTO> getAllPosts() {
+        List<Post> posts = postRepository.findAll();
+        return postMapper.toResponseDTOs(posts);
     }
 
     @Override

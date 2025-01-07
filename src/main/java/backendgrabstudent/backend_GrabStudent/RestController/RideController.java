@@ -4,6 +4,7 @@ import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.AcceptRequestReq;
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideRequestUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ResponseObject;
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideRequestRes;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Ride;
 import backendgrabstudent.backend_GrabStudent.Service.RideService;
@@ -59,6 +60,13 @@ public class RideController {
                 .build();
     }
 
+    @GetMapping("/")
+    public ResponseObject<List<RideResponseDTO>> getRideRequest() {
+        List<RideResponseDTO> rides = rideService.getAllRide();
+        return ResponseObject.<List<RideResponseDTO>>builder()
+                .data(rides)
+                .build();
+    }
 
     @PutMapping("/update/rideDone")
     public ResponseObject<String> updateRideDone(@RequestParam Integer rideId) {

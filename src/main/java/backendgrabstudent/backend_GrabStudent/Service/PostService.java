@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface PostService {
-     List<Post> getAllPosts();
+     List<PostResponseDTO> getAllPosts();
 
      List<PostResponseDTO> getAllPostsRide(boolean status, int userId);
 

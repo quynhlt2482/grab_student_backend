@@ -59,8 +59,9 @@ public class RideRequestServiceImple implements RideRequestService {
     }
 
     @Override
-    public List<RideRequest> getAllRideRequests() {
-        return List.of();
+    public List<RideRequestRes> getAllRideRequests() {
+        List<RideRequest> rideRequests = rideRequestRepository.findAll();
+        return rideRequestMapper.toRideRequestDTOs(rideRequests);
     }
 
     @Override

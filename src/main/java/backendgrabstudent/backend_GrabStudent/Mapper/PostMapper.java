@@ -8,7 +8,7 @@ import org.mapstruct.*;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface PostMapper {
+public interface  PostMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updatePostFromDTO(PostUpdateDTO postUpdateDTO, @MappingTarget Post post);
 
@@ -24,7 +24,6 @@ public interface PostMapper {
     @Mapping(source = "type", target = "postType.name")
     Post postResponseDTOToPost(PostResponseDTO postResponseDTO);
 
-    // Mapping từ danh sách PostResponseDTO sang danh sách Post
     List<Post> toPosts(List<PostResponseDTO> postResponseDTOs);
 }
 
