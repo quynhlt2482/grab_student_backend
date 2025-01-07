@@ -18,4 +18,9 @@ public interface RideReviewRepository extends JpaRepository<RideReview, Integer>
 
     @Query("SELECT AVG(rr.rating) FROM RideReview rr WHERE rr.reviewed.id = :reviewedId")
     Optional<Double> findAverageRatingByReviewedId(@Param("reviewedId") Integer reviewedId);
+
+    @Query("SELECT COUNT(r) > 0 FROM RideReview r WHERE r.ride.id = :rideId AND r.reviewer.id = :reviewerId AND r.reviewed.id = :reviewedId")
+    boolean existsByRideAndReviewerAndReviewed(@Param("rideId") Integer rideId,
+                                               @Param("reviewerId") Integer reviewerId,
+                                               @Param("reviewedId") Integer reviewedId);
 }

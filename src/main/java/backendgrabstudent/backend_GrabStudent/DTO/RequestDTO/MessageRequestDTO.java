@@ -15,8 +15,8 @@ public class MessageRequestDTO {
     private Integer senderId;
     @NotNull(message = "recipientId must not be null")
     private Integer recipientId;
-    @NotNull(message = "conversationId must not be null")
-    private Integer conversationId;
+//    @NotNull(message = "conversationId must not be null")
+//    private Integer conversationId;
     @NotBlank(message = "content must not be blank")
     private String content;
 }

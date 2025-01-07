@@ -1,6 +1,7 @@
 package backendgrabstudent.backend_GrabStudent.Service;
 
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.MessageRequestDTO;
+import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.SeenMessagesRequest;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.MessageResponseDTO;
 import backendgrabstudent.backend_GrabStudent.Entity.Conversation;
 import backendgrabstudent.backend_GrabStudent.Entity.Message;
@@ -9,7 +10,6 @@ import backendgrabstudent.backend_GrabStudent.Enums.MessageStatus;
 import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
 import backendgrabstudent.backend_GrabStudent.Exception.ErrorNumber;
 import backendgrabstudent.backend_GrabStudent.Mapper.MessageMapper;
-import backendgrabstudent.backend_GrabStudent.Repository.ConversationMemberRepos;
 import backendgrabstudent.backend_GrabStudent.Repository.ConversationRepos;
 import backendgrabstudent.backend_GrabStudent.Repository.MessageRepository;
 import backendgrabstudent.backend_GrabStudent.Repository.StudentRepository;
@@ -28,7 +28,6 @@ public class MessageServiceImpl implements MessageService {
     private final ConversationRepos conversationRepository;
     private final StudentRepository studentRepository;
     private final MessageMapper messageMapper;
-    private final ConversationMemberRepos conversationMemberRepos;
 
     @Override
     public MessageResponseDTO sendMessage(MessageRequestDTO messageRequestDTO) {
@@ -37,8 +36,20 @@ public class MessageServiceImpl implements MessageService {
                 .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
         Student recipient = studentRepository.findById(messageRequestDTO.getRecipientId())
                 .orElseThrow(() -> new CustomException(ErrorNumber.ACCOUNT_NOT_EXISTED));
-        Conversation conversation = conversationRepository.findById(messageRequestDTO.getConversationId())
-                .orElseThrow(() -> new CustomException(ErrorNumber.CONVERSATION_NOT_EXISTED));
+        Conversation conversation = null;
+        if (conversationRepository.existsByStudent1IdAndStudent2Id(messageRequestDTO.getSenderId(), messageRequestDTO.getRecipientId())) {
+            conversation = conversationRepository.findByStudent1IdAndStudent2Id(messageRequestDTO.getSenderId(), messageRequestDTO.getRecipientId());
+        } else if (conversationRepository.existsByStudent1IdAndStudent2Id(messageRequestDTO.getRecipientId(), messageRequestDTO.getSenderId())) {
+            conversation = conversationRepository.findByStudent1IdAndStudent2Id(messageRequestDTO.getRecipientId(), messageRequestDTO.getSenderId());
+        } else {
+            conversation = Conversation.builder()
+                    .student1(sender)
+                    .student2(recipient)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            conversationRepository.save(conversation);
+        }
 
         // Map DTO to Entity and save
         Message message = Message.builder()
@@ -62,5 +73,22 @@ public class MessageServiceImpl implements MessageService {
                 .map(messageMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void markMessagesAsSeen(SeenMessagesRequest request) {
+        messageRepository.updateStatusByMessageIds(MessageStatus.RECEIVED.toString(), request.getMessageIds());
+    }
+
+    @Override
+    public Integer getUnreadMessageCount(Integer recipientId) {
+        return messageRepository.countByRecipientIdAndStatus(recipientId, MessageStatus.SENT.toString());
+    }
+
+    @Override
+    public List<MessageResponseDTO> getMessages(Integer senderId, Integer recipientId) {
+        return List.of();
+    }
+
+
 }
 

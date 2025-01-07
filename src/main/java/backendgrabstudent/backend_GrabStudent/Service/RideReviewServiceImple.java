@@ -32,13 +32,14 @@ public class RideReviewServiceImple implements RideReviewService {
 
     @Override
     public RideReviewResponseDTO createRideReview(RideReviewRequestDTO requestDTO) {
-        if (
-                rideReviewRepository.existsByReviewerId(requestDTO.getReviewerId()) &&
-                rideReviewRepository.existsByReviewedId(requestDTO.getReviewedId()) &&
-                rideReviewRepository.existsByRideId(requestDTO.getRideId())
-        ) {
+        if (rideReviewRepository.existsByRideAndReviewerAndReviewed(
+                requestDTO.getRideId(),
+                requestDTO.getReviewerId(),
+                requestDTO.getReviewedId()
+        )){
             throw new CustomException(ErrorNumber.REVIEW_EXISTED);
         }
+
         Ride ride = rideRepository.findById(requestDTO.getRideId())
                 .orElseThrow(() -> new CustomException(ErrorNumber.RIDE_NOT_EXISTED));
         Student reviewer = studentRepository.findById(requestDTO.getReviewerId())
