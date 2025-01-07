@@ -1,6 +1,7 @@
 package backendgrabstudent.backend_GrabStudent.Entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "conversation")
 public class Conversation {
     @Id
@@ -21,8 +23,11 @@ public class Conversation {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "conversation")
-    private List<ConversationMember> members;
+    @ManyToOne
+    private Student student1;
+
+    @ManyToOne
+    private Student student2;
 
     @OneToMany(mappedBy = "conversation")
     private List<Message> messages;

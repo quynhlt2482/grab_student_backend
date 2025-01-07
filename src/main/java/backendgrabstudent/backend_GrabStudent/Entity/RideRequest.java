@@ -2,29 +2,48 @@ package backendgrabstudent.backend_GrabStudent.Entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+import java.math.BigDecimal;
+
 @Entity
-@Table(name = "ride_request")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class RideRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "passenger_id")
-    private Student passenger;
+    @JoinColumn(name = "passenger_id", referencedColumnName = "id")
+    Student passenger;
 
     @ManyToOne
-    @JoinColumn(name = "ride_id")
-    private Ride ride;
+    @JoinColumn(name = "post_id")
+    Post post;
 
-    private String pickUpLocation;
-    private String dropOffLocation;
-    private String status;
+    @OneToOne(mappedBy = "rideRequest")
+    Ride ride;
+
+    String pickUpLocation;
+    String dropOffLocation;
+    @Column(precision = 38, scale = 30)
+    BigDecimal pickUpLat;
+
+    @Column(precision = 38, scale = 30)
+    BigDecimal pickUpLon;
+
+    @Column(precision = 38, scale = 30)
+    BigDecimal dropOffLat;
+
+    @Column(precision = 38, scale = 30)
+    BigDecimal dropOffLon;
+    String status;
+    String estimatedTime;
+    String distance;
 }

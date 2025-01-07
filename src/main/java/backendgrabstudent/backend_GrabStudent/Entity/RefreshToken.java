@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "refresh_token")
+@Table(name = "refreshtoken")
 public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "student_id")
     private Student student;
 
@@ -25,4 +25,5 @@ public class RefreshToken {
     private LocalDateTime expiryDatetime;
     private LocalDateTime createdAt;
     private Boolean revoked;
+
 }
