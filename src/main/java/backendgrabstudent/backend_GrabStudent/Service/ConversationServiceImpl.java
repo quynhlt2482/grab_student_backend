@@ -2,7 +2,6 @@ package backendgrabstudent.backend_GrabStudent.Service;
 
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ConversationResponse;
 import backendgrabstudent.backend_GrabStudent.Entity.Conversation;
-import backendgrabstudent.backend_GrabStudent.Entity.Message;
 import backendgrabstudent.backend_GrabStudent.Entity.Student;
 import backendgrabstudent.backend_GrabStudent.Enums.MessageStatus;
 import backendgrabstudent.backend_GrabStudent.Exception.CustomException;
