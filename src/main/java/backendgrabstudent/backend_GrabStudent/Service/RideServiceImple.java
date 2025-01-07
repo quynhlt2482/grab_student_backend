@@ -180,4 +180,10 @@ public class RideServiceImple implements RideService {
     public void DeleteRide(Integer rideId) {
 
     }
+
+    @Override
+    public List<RideResponseDTO> getAllRide() {
+        List<Ride> ride = rideRepository.findAll();
+        return rideMapper.toRideResponseList(ride);
+    }
 }

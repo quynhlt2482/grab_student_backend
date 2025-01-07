@@ -3,6 +3,8 @@ package backendgrabstudent.backend_GrabStudent.RestController;
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideReviewRequestDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ResponseObject;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideReviewResponseDTO;
+import backendgrabstudent.backend_GrabStudent.Entity.Ride;
+import backendgrabstudent.backend_GrabStudent.Entity.RideReview;
 import backendgrabstudent.backend_GrabStudent.Service.RideReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -56,4 +58,5 @@ public class RideReviewController {
                 .data("RideReview deleted successfully.")
                 .build();
     }
+
 }

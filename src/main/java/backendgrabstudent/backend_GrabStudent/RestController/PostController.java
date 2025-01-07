@@ -27,9 +27,9 @@ public class PostController {
     }
 
     @GetMapping("/")
-    public ResponseObject<List<Post>> getPosts() {
-        List<Post> posts = postService.getAllPosts();
-        return ResponseObject.<List<Post>>builder()
+    public ResponseObject<List<PostResponseDTO>> getPosts() {
+        List<PostResponseDTO> posts = postService.getAllPosts();
+        return ResponseObject.<List<PostResponseDTO>>builder()
                 .data(posts)
                 .build();
     }

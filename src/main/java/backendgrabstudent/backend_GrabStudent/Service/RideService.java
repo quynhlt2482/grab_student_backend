@@ -24,5 +24,7 @@ public interface RideService {
 
     void updateStatusToCancel(Integer rideId);
 
+    List<RideResponseDTO> getAllRide();
+
     void DeleteRide(Integer rideId);
 }

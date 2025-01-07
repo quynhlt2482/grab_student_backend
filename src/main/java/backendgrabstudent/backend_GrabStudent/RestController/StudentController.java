@@ -90,7 +90,21 @@ public class StudentController {
     public List<StudentManagerReponseDTO> getAllStudent() {
         return studentService.getAllStudentManagerReponse();
     }
-
+    @PutMapping("/manager/update/{id}")
+    public ResponseObject<String> updateStudentManager(@PathVariable int id, @RequestBody StudentManagerReponseDTO studentManagerResponseDTO) {
+        studentManagerResponseDTO.setId(id);
+        studentService.updateUserinManager(studentManagerResponseDTO);
+        return ResponseObject.<String>builder()
+                .data("Student updated successfully")
+                .build();
+    }
+    @PutMapping("/manager/delete/{id}")
+    public ResponseObject<String> deleteStudentManager(@PathVariable int id) {
+        studentService.deleteStudent(id);
+        return ResponseObject.<String>builder()
+                .data("Student delete with " + id + " success")
+                .build();
+    }
     @GetMapping("/rating")
     public ResponseObject<Float> getStudentRating(@RequestParam Integer id) {
         Float rating = studentService.getStudentRating(id);

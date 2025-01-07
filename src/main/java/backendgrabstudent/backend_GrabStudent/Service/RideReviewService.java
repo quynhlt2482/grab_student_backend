@@ -2,6 +2,7 @@ package backendgrabstudent.backend_GrabStudent.Service;
 
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideReviewRequestDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideReviewResponseDTO;
+import backendgrabstudent.backend_GrabStudent.Entity.RideReview;
 
 import java.util.List;
 

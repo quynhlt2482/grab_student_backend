@@ -1,5 +1,6 @@
 package backendgrabstudent.backend_GrabStudent.RestController;
 
+import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.PostResponseDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.RideRequestRes;
 import backendgrabstudent.backend_GrabStudent.DTO.RequestDTO.RideRequestUpdateDTO;
 import backendgrabstudent.backend_GrabStudent.DTO.ResponseDTO.ResponseObject;
@@ -24,6 +25,14 @@ public class RideRequestController {
     @GetMapping("/fineByPost/{postId}")
     public ResponseObject<List<RideRequestRes>> getRideRequestsByPostId(@PathVariable int postId, @RequestParam String status) {
         List<RideRequestRes> rideRequests = rideRequestService.getRideRequestByPostId(postId, status);
+        return ResponseObject.<List<RideRequestRes>>builder()
+                .data(rideRequests)
+                .build();
+    }
+
+    @GetMapping("/")
+    public ResponseObject<List<RideRequestRes>> getRideRequest() {
+        List<RideRequestRes> rideRequests = rideRequestService.getAllRideRequests();
         return ResponseObject.<List<RideRequestRes>>builder()
                 .data(rideRequests)
                 .build();
